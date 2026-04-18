@@ -21,3 +21,6 @@ Demo site for Hanna Burgstaller (hanna-burgstaller.lacop.site).
 - `/about` and `/contact` routes removed (single-page concept); sitemap trimmed to `/`.
 - Placeholder policy: bio/stats/agencies/email are clearly-labelled placeholders; media are six abstract gradient SVGs in the palette. Nothing fabricated about Hanna.
 - Pre-commit grep for banned tropes (`Vol(ume|\.) ?0?1|MMX|plate|Plates|Masthead|Colophon`) returns zero matches.
+
+## 2026-04-18 — Deploy-ready
+- Site-scoped follow-up so HEAD is inside `sites/hanna-burgstaller/` when the Vercel project first pulls — the `ignoreCommand` returns non-zero and the first build runs (per the bootstrap gotcha documented in root `CLAUDE.md`).
