@@ -128,10 +128,13 @@ export default function Navigation() {
         </button>
       </div>
 
-      {/* Mobile bottom dot strip */}
+      {/* Mobile bottom dot strip — tap targets are the full 36x36 button; the
+          visible dot is purely decorative inside it so the hit area clears 44px
+          touch minima (sum of button size + small gap). */}
       <nav
         aria-label="Scene minimap — mobile"
-        className="md:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40 flex gap-2 bg-paper/85 backdrop-blur px-3 py-2 rounded-full border border-rule"
+        className="md:hidden fixed left-1/2 -translate-x-1/2 z-40 flex items-center gap-1 bg-paper/90 backdrop-blur px-2 py-1 rounded-full border border-rule"
+        style={{ bottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
       >
         {scenes.map((s) => {
           const active = s.key === activeKey;
@@ -142,8 +145,15 @@ export default function Navigation() {
               onClick={() => go(s.anchor)}
               aria-label={`Scene ${s.n}`}
               aria-current={active ? "true" : undefined}
-              className={`w-2 h-2 rounded-full transition-colors ${active ? "bg-bronze" : "bg-muted/40"}`}
-            />
+              className="w-9 h-9 flex items-center justify-center rounded-full"
+            >
+              <span
+                aria-hidden
+                className={`block rounded-full transition-all ${
+                  active ? "w-2.5 h-2.5 bg-bronze" : "w-1.5 h-1.5 bg-muted/50"
+                }`}
+              />
+            </button>
           );
         })}
       </nav>

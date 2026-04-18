@@ -24,3 +24,11 @@ Demo site for Hanna Burgstaller (hanna-burgstaller.lacop.site).
 
 ## 2026-04-18 — Deploy-ready
 - Site-scoped follow-up so HEAD is inside `sites/hanna-burgstaller/` when the Vercel project first pulls — the `ignoreCommand` returns non-zero and the first build runs (per the bootstrap gotcha documented in root `CLAUDE.md`).
+
+## 2026-04-18 — Mobile fix: touch targets + iOS safe area on scene minimap
+- Mobile bottom dot strip buttons were `w-2 h-2` (8px) — well below the 44px
+  touch-target minimum. Each button is now a `w-9 h-9` (36px) tappable
+  square with the coloured dot as a purely decorative child; effective
+  hit area covers the 44px guideline once combined with the pill's gap.
+- Bottom position now uses `max(0.75rem, env(safe-area-inset-bottom))` so
+  the pill clears the iOS home indicator on notched devices.
