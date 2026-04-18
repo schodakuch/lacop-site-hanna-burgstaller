@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-muted: var(--muted);
+  --color-rule: var(--rule);
+  --color-ecru: var(--ecru);
+  --color-bronze: var(--bronze);
+  --color-bronze-soft: var(--bronze-soft);
+
+  --paper: #EEEAE0;
+  --background: #EEEAE0;
+  --foreground: #141210;
+  --ink: #141210;
+  --ink-soft: #3E342A;
+  --muted: #8A7F6C;
+  --rule: #CDC2A8;
+  --ecru: #DCD1B7;
+  --bronze: #6B4A1E;
+  --bronze-soft: #A17C3F;
+}
+
+html, body { background: var(--paper); color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+}
+
+body {
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection { background: var(--bronze); color: var(--paper); }
+
+:where(a, button, [role="button"], input, textarea, select):focus-visible {
+  outline: 2px solid var(--bronze);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+.display {
+  font-family: var(--font-display), ui-serif, Georgia, serif;
+  font-optical-sizing: auto;
+  font-variation-settings: "opsz" 144, "SOFT" 0, "WONK" 0;
+  letter-spacing: -0.03em;
+  line-height: 0.9;
+}
+
+.mono {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-feature-settings: "tnum";
+}
+
+.rule-t { border-top: 1px solid var(--rule); }
+.rule-b { border-bottom: 1px solid var(--rule); }
+
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.hover-mark {
+  position: relative;
+  transition: color 180ms ease;
+}
+.hover-mark::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -0.12em;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hover-mark:hover::after,
+.hover-mark:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}

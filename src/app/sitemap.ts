@@ -1,0 +1,8 @@
+import type { MetadataRoute } from "next";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hanna-burgstaller.lacop.site";
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const now = new Date();
+  return [{ url: SITE_URL, lastModified: now, changeFrequency: "weekly", priority: 1 }];
+}
