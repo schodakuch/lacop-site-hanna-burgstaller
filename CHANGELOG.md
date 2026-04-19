@@ -2,6 +2,35 @@
 
 Demo site for Hanna Burgstaller (hanna-burgstaller.lacop.site).
 
+## 2026-04-19 — Multi-page refactor (cover / photos / about / contact)
+- Single-page scroll-through (scenes 01–06 stacked on `/`) replaced by
+  a four-page site: `/` cover, `/photos` (stacked category sections +
+  sticky scroll-spy strip), `/about` (formerly scene 05 Process),
+  `/contact` (formerly scene 06 Reach with copy-email). Categories
+  remain taxonomy inside /photos — they don't become separate routes.
+- Mobile nav rebuilt for touch: fixed top bar (brand + current page
+  number + DE toggle + Menu), drop-down drawer with 56px-tall rows,
+  numbered labels, and an active-page highlight in flare. Replaces the
+  old bottom dot strip, which only showed numbers without labels —
+  visitors had no way to tell which dot meant what.
+- Desktop nav keeps the signature right-edge minimap, now linking
+  between real pages rather than scroll anchors. Active page rail
+  thickens to 2px in flare; inactive entries fade in on hover as
+  before.
+- Cover page restructured so the brand corner label no longer overlaps
+  the "A scrolling sequence" eyebrow on short mobile viewports —
+  content now starts below a reserved 96px top clearance.
+- New shared infrastructure:
+  - `src/lib/pages.ts` — flat 4-page `buildPages({cover, photos, about, contact})`.
+  - `src/hooks/usePages.ts` — client hook returning the ledger with
+    active tenant's language labels.
+  - `src/lib/kinetic.ts` — extracted `useKineticAxes()` so every page's
+    H1 gets the same scroll-velocity font-variation interaction. The
+    kinetic typography is now a cross-page signature, not scene-only.
+  - `src/components/Pagination.tsx` — prev/next between pages.
+- Sitemap emits four URLs; dual-build verified: primary and
+  `LACOP_USER_SLUG=sample-alt` both produce identical 4-route trees.
+
 ## 2026-04-19 — Dark-first palette with acid chartreuse signal
 - Old palette (warm ecru `#EEEAE0` paper + bronze `#6B4A1E` accent) sat
   squarely inside the repo's gold/champagne/tan bucket — five other

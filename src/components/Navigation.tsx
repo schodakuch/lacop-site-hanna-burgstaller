@@ -1,110 +1,168 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useLang } from "@/context/LanguageContext";
-import { useCategories, useProfile } from "@/context/ProfileContext";
-import { fixedScenes, translations } from "@/data/content";
+import { useProfile } from "@/context/ProfileContext";
+import { translations } from "@/data/content";
+import { usePages } from "@/hooks/usePages";
 
-// Right-edge minimap — the only chrome on the site.
-// Scene 01 Hello + 05 Process + 06 Reach are the fixed narrative bookends;
-// scenes 02/03/04 are built from the active customer's first three
-// categories (any names). Flipping LACOP_USER_SLUG changes which profile is
-// rendered without touching this file.
-
-type SceneRow = { key: string; n: string; anchor: string; label: string };
+// Multi-page navigation. Mobile: top bar + a large-text drawer with
+// labels and page numbers (not just dots — visitors need to know which
+// page each tap leads to). Desktop: right-edge minimap listing all four
+// pages with their numbers and labels, persistent. The right-rail is
+// the signature desktop chrome; the mobile drawer is the primary nav
+// paradigm on touch.
 
 export default function Navigation() {
   const { lang, toggle, t } = useLang();
   const profile = useProfile();
-  const categories = useCategories();
+  const pages = usePages();
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+
   const displayName = profile.display_name ?? profile.slug;
   const firstName = displayName.split(" ")[0];
   const lastName = displayName.split(" ").slice(1).join(" ");
 
-  const scenes: SceneRow[] = useMemo(() => {
-    const contentScenes: SceneRow[] = categories.slice(0, 3).map((c, i) => ({
-      key: c.slug || `cat-${i}`,
-      n: String(i + 2).padStart(2, "0"),
-      anchor: `#scene-${String(i + 2).padStart(2, "0")}`,
-      label: c.name,
-    }));
-    return [
-      { key: "hello", n: fixedScenes.hello.n, anchor: fixedScenes.hello.anchor, label: t(translations.nav.hello) },
-      ...contentScenes,
-      { key: "process", n: fixedScenes.process.n, anchor: fixedScenes.process.anchor, label: t(translations.nav.process) },
-      { key: "reach", n: fixedScenes.reach.n, anchor: fixedScenes.reach.anchor, label: t(translations.nav.reach) },
-    ];
-  }, [categories, lang, t]);
-
-  const [activeKey, setActiveKey] = useState<string>(scenes[0]?.key ?? "hello");
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const map = new Map(scenes.map((s) => [s.anchor.replace("#", ""), s.key]));
-    const els = scenes
-      .map((s) => document.querySelector(s.anchor))
-      .filter((el): el is HTMLElement => el instanceof HTMLElement);
-    if (els.length === 0) return;
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (!visible) return;
-        const key = map.get(visible.target.id);
-        if (key) setActiveKey(key);
-      },
-      { rootMargin: "-40% 0px -40% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] },
-    );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, [scenes]);
-
-  const go = (anchor: string) => {
-    const el = document.querySelector(anchor);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname === href || pathname.startsWith(`${href}/`);
   };
 
-  const lastScene = scenes[scenes.length - 1];
-  const currentN = scenes.find((s) => s.key === activeKey)?.n ?? scenes[0]?.n ?? "01";
+  useEffect(() => setOpen(false), [pathname]);
+
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const currentPage = pages.find((p) => isActive(p.href));
 
   return (
     <>
-      {/* Corner brand — always visible top-left */}
-      <a
-        href="#scene-01"
-        onClick={(e) => {
-          e.preventDefault();
-          go("#scene-01");
-        }}
-        className="fixed top-5 md:top-7 left-5 md:left-10 z-40 block leading-tight"
+      {/* Mobile top bar — always visible. Brand left, page marker +
+          language toggle + menu button right. min-h-14 gives steady
+          clearance so cover content never slides under it. */}
+      <header className="md:hidden fixed top-0 inset-x-0 z-50 bg-paper/92 backdrop-blur-md border-b border-rule">
+        <div className="h-14 px-5 flex items-center justify-between gap-3">
+          <Link
+            href="/"
+            className="flex items-baseline gap-2 min-w-0"
+            aria-label={displayName}
+          >
+            <span className="text-[0.98rem] font-medium truncate">{firstName}</span>
+            {lastName && (
+              <span className="text-[0.9rem] text-ink-soft truncate">{lastName}</span>
+            )}
+          </Link>
+          <div className="flex items-center gap-1">
+            {currentPage && (
+              <span
+                className="mono text-[0.62rem] tracking-[0.22em] tabular-nums text-muted pr-3 border-r border-rule mr-1"
+                aria-hidden
+              >
+                {currentPage.n}
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={toggle}
+              className="mono text-[0.66rem] uppercase tracking-[0.22em] text-ink-soft min-h-11 min-w-11 px-2 flex items-center justify-center"
+              aria-label="Toggle language"
+            >
+              {lang === "en" ? "DE" : "EN"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              className="mono text-[0.66rem] uppercase tracking-[0.22em] text-ink min-h-11 min-w-11 px-2 flex items-center justify-center -mr-2"
+            >
+              {open ? t(translations.nav.close) : t(translations.nav.menu)}
+            </button>
+          </div>
+        </div>
+
+        {/* Drawer — drops down from the bar. Large tap targets, numbered
+            labels, active page in flare. */}
+        <div
+          id="mobile-menu"
+          className={`transition-[max-height,opacity] duration-300 ${
+            open
+              ? "max-h-[calc(100vh-3.5rem)] opacity-100 border-t border-rule overflow-y-auto"
+              : "max-h-0 opacity-0 overflow-hidden"
+          }`}
+        >
+          <ol className="px-5 py-6 divide-y divide-rule">
+            {pages.map((p) => {
+              const active = isActive(p.href);
+              return (
+                <li key={p.key}>
+                  <Link
+                    href={p.href}
+                    className={`flex items-baseline gap-5 py-4 min-h-14 ${
+                      active ? "text-flare" : "text-ink"
+                    }`}
+                    aria-current={active ? "page" : undefined}
+                  >
+                    <span
+                      className={`mono text-[0.7rem] tracking-[0.22em] tabular-nums w-8 shrink-0 ${
+                        active ? "text-flare" : "text-muted"
+                      }`}
+                    >
+                      {p.n}
+                    </span>
+                    <span className="text-[1.35rem] tracking-[-0.01em] font-light">
+                      {p.label}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      </header>
+
+      {/* Desktop — corner brand top-left + right-edge minimap */}
+      <Link
+        href="/"
         aria-label={displayName}
+        className="hidden md:block fixed top-7 left-10 z-40 leading-tight"
       >
         <span className="mono text-[0.6rem] tracking-[0.24em] uppercase text-muted">
           {profile.role}
         </span>
-        <span className="block text-[0.98rem] md:text-[1.05rem] mt-1">
+        <span className="block text-[1.05rem] mt-1">
           <span className="font-medium">{firstName}</span>{" "}
           {lastName && <span className="text-ink-soft">{lastName}</span>}
         </span>
-      </a>
+      </Link>
 
-      {/* Desktop right-edge minimap */}
       <nav
-        aria-label="Scene minimap"
+        aria-label="Pages"
         className="hidden md:flex fixed top-1/2 right-6 lg:right-10 z-40 -translate-y-1/2 flex-col items-end gap-3"
       >
-        {scenes.map((s) => {
-          const active = s.key === activeKey;
+        {pages.map((p) => {
+          const active = isActive(p.href);
           return (
-            <button
-              key={s.key}
-              type="button"
-              onClick={() => go(s.anchor)}
+            <Link
+              key={p.key}
+              href={p.href}
               className="group flex items-center gap-3 py-1"
-              aria-label={`Scene ${s.n} — ${s.label}`}
-              aria-current={active ? "true" : undefined}
+              aria-label={`${p.n} — ${p.label}`}
+              aria-current={active ? "page" : undefined}
             >
               <span
                 className={`mono tabular-nums text-[0.66rem] tracking-[0.22em] transition-all ${
@@ -113,7 +171,7 @@ export default function Navigation() {
                     : "text-muted opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0"
                 }`}
               >
-                {s.n} · {s.label}
+                {p.n} · {p.label}
               </span>
               <span
                 aria-hidden
@@ -123,7 +181,7 @@ export default function Navigation() {
                     : "w-3 h-[1px] bg-muted group-hover:w-5 group-hover:bg-ink"
                 }`}
               />
-            </button>
+            </Link>
           );
         })}
         <button
@@ -134,51 +192,6 @@ export default function Navigation() {
         >
           {lang === "en" ? "DE" : "EN"}
         </button>
-      </nav>
-
-      {/* Mobile — top-right strip with scene number + language */}
-      <div className="md:hidden fixed top-5 right-5 z-40 flex items-center gap-4">
-        <span className="mono text-[0.66rem] tracking-[0.22em] text-muted tabular-nums">
-          {currentN} / {lastScene?.n ?? "06"}
-        </span>
-        <button
-          type="button"
-          onClick={toggle}
-          className="mono text-[0.66rem] uppercase tracking-[0.22em] text-ink"
-          aria-label="Toggle language"
-        >
-          {lang === "en" ? "DE" : "EN"}
-        </button>
-      </div>
-
-      {/* Mobile bottom dot strip — tap targets are the full 36x36 button; the
-          visible dot is purely decorative inside it so the hit area clears 44px
-          touch minima (sum of button size + small gap). */}
-      <nav
-        aria-label="Scene minimap — mobile"
-        className="md:hidden fixed left-1/2 -translate-x-1/2 z-40 flex items-center gap-1 bg-paper/90 backdrop-blur px-2 py-1 rounded-full border border-rule"
-        style={{ bottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
-      >
-        {scenes.map((s) => {
-          const active = s.key === activeKey;
-          return (
-            <button
-              key={s.key}
-              type="button"
-              onClick={() => go(s.anchor)}
-              aria-label={`Scene ${s.n}`}
-              aria-current={active ? "true" : undefined}
-              className="w-9 h-9 flex items-center justify-center rounded-full"
-            >
-              <span
-                aria-hidden
-                className={`block rounded-full transition-all ${
-                  active ? "w-2.5 h-2.5 bg-flare" : "w-1.5 h-1.5 bg-muted/50"
-                }`}
-              />
-            </button>
-          );
-        })}
       </nav>
     </>
   );

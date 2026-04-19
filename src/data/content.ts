@@ -1,30 +1,23 @@
-// UI copy only — LACOP profile data (display_name, categories, media) lives
-// in src/data/mock.ts and is read via async resolvers in src/lib/lacop.ts.
+// UI copy. LACOP profile data (display_name, categories, media) lives in
+// src/data/mock.ts and is read via async resolvers in src/lib/lacop.ts.
 //
-// Multi-tenant shell: scenes 01/05/06 are the fixed narrative bookends
-// (Hello / Process / Reach) and belong to the hanna-burgstaller visual
-// concept ("three rhythms on a runway"). Scenes 02/03/04 are derived at
-// render time from the active customer's first three categories — whatever
-// names they use — so flipping LACOP_USER_SLUG swaps the whole content tier
-// without touching the shell's voice. Tempo words and captions are
-// positional (index 0/1/2), not slug-bound.
+// Multi-page site: cover (01) / photos (02) / about (03) / contact (04).
+// Photo categories are sections INSIDE /photos (not separate pages), with
+// a sticky scroll-spy strip. Page content is tenant-agnostic — flipping
+// LACOP_USER_SLUG swaps the profile + categories but keeps the shell
+// voice intact.
 
-export const fixedScenes = {
-  hello: { n: "01", anchor: "#scene-01" },
-  process: { n: "05", anchor: "#scene-05" },
-  reach: { n: "06", anchor: "#scene-06" },
-} as const;
-
-// Tempo eyebrow applied to category at index i. Site-level voice — every
-// customer deployed through this shell inherits this three-beat rhythm.
+// Tempo eyebrow applied to the photo-section at index i. Site-level
+// voice — every customer inherits this three-beat rhythm as their first
+// three categories are rendered in /photos.
 export const tempoByIndex = [
   { en: "held", de: "gehalten" },
   { en: "in motion", de: "in Bewegung" },
   { en: "pivot", de: "Drehpunkt" },
 ];
 
-// Caption applied to category at index i. Kept generic enough to read
-// sensibly against any category name the customer uses.
+// Caption applied to the photo-section at index i. Kept generic enough
+// to read sensibly against any category name the customer uses.
 export const captionByIndex = [
   {
     en: "Held poses. The moment before the next one.",
@@ -42,32 +35,46 @@ export const captionByIndex = [
 
 export const translations = {
   nav: {
-    hello: { en: "Hello", de: "Hallo" },
-    process: { en: "Process", de: "Prozess" },
-    reach: { en: "Reach", de: "Ansprache" },
-    index: { en: "Index", de: "Index" },
+    cover: { en: "Cover", de: "Cover" },
+    photos: { en: "Photos", de: "Fotos" },
+    about: { en: "About", de: "Über" },
+    contact: { en: "Contact", de: "Kontakt" },
+    menu: { en: "Menu", de: "Menü" },
     close: { en: "Close", de: "Schließen" },
   },
-  hello: {
+  cover: {
     eyebrow: { en: "A scrolling sequence", de: "Eine Sequenz im Scroll" },
     subtitle: {
-      en: "Six scenes. Scroll — the type responds.",
-      de: "Sechs Szenen. Scrollen — die Schrift antwortet.",
+      en: "Four pages. Type that breathes with scroll speed. Start with the photos.",
+      de: "Vier Seiten. Schrift, die mit der Scroll-Geschwindigkeit atmet. Fotos zuerst.",
     },
     invitation: {
-      en: "Begin the sequence",
-      de: "Sequenz beginnen",
+      en: "Enter the photos",
+      de: "Zu den Fotos",
     },
     hint: {
       en: "The heading breathes with your scroll speed.",
       de: "Die Überschrift atmet mit deiner Scroll-Geschwindigkeit.",
     },
   },
-  process: {
-    heading: { en: "Process", de: "Prozess" },
+  photos: {
+    heading: { en: "Photos", de: "Fotos" },
+    intro: {
+      en: "One page, every series. The strip below tracks where you are as you scroll.",
+      de: "Eine Seite, alle Serien. Der Streifen unten zeigt, wo du bist.",
+    },
+    categories_label: { en: "Series", de: "Serien" },
+    frame_count: {
+      one: { en: "1 photo", de: "1 Foto" },
+      other: { en: "{n} photos", de: "{n} Fotos" },
+    },
+    empty: { en: "empty", de: "leer" },
+  },
+  about: {
+    heading: { en: "About", de: "Über" },
     body: {
-      en: "A working diary will live here — call sheets, test frames, the ten minutes before a slate. For now, this scene is a placeholder until the subject's own notes are in.",
-      de: "Hier wächst ein Arbeitsjournal — Dispositionen, Testaufnahmen, die zehn Minuten vor einer Klappe. Bis eigene Notizen eingereicht sind, bleibt diese Szene ein Platzhalter.",
+      en: "A working diary will live here — call sheets, test frames, the ten minutes before a slate. For now, this page is a placeholder until the subject's own notes are in.",
+      de: "Hier wächst ein Arbeitsjournal — Dispositionen, Testaufnahmen, die zehn Minuten vor einer Klappe. Bis eigene Notizen eingereicht sind, bleibt diese Seite ein Platzhalter.",
     },
     placeholder_note: {
       en: "Placeholder — replace with the subject's own wording before going live.",
@@ -75,9 +82,10 @@ export const translations = {
     },
     stats_empty: { en: "Measurements to come.", de: "Maße folgen." },
     agencies_empty: { en: "Representation to come.", de: "Agentur folgt." },
+    tempo: { en: "in progress", de: "in Arbeit" },
   },
-  reach: {
-    heading: { en: "Reach", de: "Ansprache" },
+  contact: {
+    heading: { en: "Contact", de: "Kontakt" },
     lede: {
       en: "One line, not a form.",
       de: "Eine Zeile, kein Formular.",
@@ -88,6 +96,11 @@ export const translations = {
       en: "Placeholder address — replace before going live.",
       de: "Platzhalter-Adresse — vor Livegang ersetzen.",
     },
+    tempo: { en: "direct", de: "direkt" },
+  },
+  pagination: {
+    prev: { en: "Previous", de: "Vorherige" },
+    next: { en: "Next", de: "Nächste" },
   },
   footer: {
     rights: { en: "All rights reserved", de: "Alle Rechte vorbehalten" },
@@ -99,6 +112,6 @@ export const translations = {
       en: "This address isn't part of the walk.",
       de: "Diese Adresse gehört nicht zum Ablauf.",
     },
-    home: { en: "Return to scene 01", de: "Zurück zu Szene 01" },
+    home: { en: "Return to the cover", de: "Zurück zum Cover" },
   },
 };

@@ -108,7 +108,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         className={`${display.variable} ${body.variable} ${mono.variable} bg-paper text-ink min-h-screen flex flex-col`}
       >
         <a
-          href="#scene-01"
+          href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[80] focus:bg-ink focus:text-paper focus:px-4 focus:py-2 focus:text-xs focus:uppercase focus:tracking-[0.2em]"
         >
           Skip to content
