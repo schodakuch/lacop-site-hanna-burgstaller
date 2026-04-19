@@ -2,6 +2,26 @@
 
 Demo site for Hanna Burgstaller (hanna-burgstaller.lacop.site).
 
+## 2026-04-19 — Dark-first palette with acid chartreuse signal
+- Old palette (warm ecru `#EEEAE0` paper + bronze `#6B4A1E` accent) sat
+  squarely inside the repo's gold/champagne/tan bucket — five other
+  sites already use variations on that (jitka champagne, josefine gold,
+  lenandjakobookings tan, carina-rebecca clay, lea-emrich is the only
+  cool outlier). Swapped to a dark-first palette: near-black cool ground
+  `#131319`, warm bone type `#F2EEE3`, acid chartreuse flare `#C8FF4A`.
+  Nothing else in the repo looks like this — it's the only dark-mode
+  site in the lineup and the only chartreuse accent.
+- Renamed CSS vars + tailwind token classes accordingly:
+  `--ecru → --shade`, `--bronze → --flare`, `--bronze-soft → --flare-soft`.
+  Components swept: `bg-ecru → bg-shade`, `text-bronze → text-flare`,
+  `bg-bronze → bg-flare`, `hover:text-bronze → hover:text-flare`.
+- Grain overlay switched from `mix-blend-mode: multiply` at 0.06 opacity
+  (invisible on dark — black × near-black ≈ black) to `overlay` at 0.14.
+  Overlay lifts highlights and deepens shadows both ways, keeping the
+  photographic texture legible against the black ground.
+- Focus ring + selection now render in chartreuse — acts as a cue-light
+  signal against the dark, WCAG AAA against the ground.
+
 ## 2026-04-19 — Meta description: stop leaking hanna's taxonomy into other tenants
 - `generateMetadata()` fallback used a hard-coded tagline
   `"a scrolling sequence. Stills, strides, turns."` — for any tenant

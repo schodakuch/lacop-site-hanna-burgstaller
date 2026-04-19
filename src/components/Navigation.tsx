@@ -109,7 +109,7 @@ export default function Navigation() {
               <span
                 className={`mono tabular-nums text-[0.66rem] tracking-[0.22em] transition-all ${
                   active
-                    ? "text-bronze opacity-100 translate-x-0"
+                    ? "text-flare opacity-100 translate-x-0"
                     : "text-muted opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0"
                 }`}
               >
@@ -119,7 +119,7 @@ export default function Navigation() {
                 aria-hidden
                 className={`block transition-all ${
                   active
-                    ? "w-6 h-[2px] bg-bronze"
+                    ? "w-6 h-[2px] bg-flare"
                     : "w-3 h-[1px] bg-muted group-hover:w-5 group-hover:bg-ink"
                 }`}
               />
@@ -129,7 +129,7 @@ export default function Navigation() {
         <button
           type="button"
           onClick={toggle}
-          className="mono mt-4 pt-3 border-t border-rule text-[0.66rem] uppercase tracking-[0.22em] text-ink-soft hover:text-bronze transition-colors"
+          className="mono mt-4 pt-3 border-t border-rule text-[0.66rem] uppercase tracking-[0.22em] text-ink-soft hover:text-flare transition-colors"
           aria-label="Toggle language"
         >
           {lang === "en" ? "DE" : "EN"}
@@ -173,7 +173,7 @@ export default function Navigation() {
               <span
                 aria-hidden
                 className={`block rounded-full transition-all ${
-                  active ? "w-2.5 h-2.5 bg-bronze" : "w-1.5 h-1.5 bg-muted/50"
+                  active ? "w-2.5 h-2.5 bg-flare" : "w-1.5 h-1.5 bg-muted/50"
                 }`}
               />
             </button>

@@ -12,20 +12,24 @@
   --color-ink-soft: var(--ink-soft);
   --color-muted: var(--muted);
   --color-rule: var(--rule);
-  --color-ecru: var(--ecru);
-  --color-bronze: var(--bronze);
-  --color-bronze-soft: var(--bronze-soft);
+  --color-shade: var(--shade);
+  --color-flare: var(--flare);
+  --color-flare-soft: var(--flare-soft);
 
-  --paper: #EEEAE0;
-  --background: #EEEAE0;
-  --foreground: #141210;
-  --ink: #141210;
-  --ink-soft: #3E342A;
-  --muted: #8A7F6C;
-  --rule: #CDC2A8;
-  --ecru: #DCD1B7;
-  --bronze: #6B4A1E;
-  --bronze-soft: #A17C3F;
+  /* Dark-first palette. Every other site in the repo renders on warm
+     cream/bone/white paper; hanna inverts. The kinetic display type
+     reads like a projection on a black stage, and the acid chartreuse
+     accent hits like a cue light — both unique in the lineup. */
+  --paper: #131319;        /* near-black ground with a cool cast */
+  --background: #131319;
+  --foreground: #F2EEE3;   /* warm bone type against cool ground */
+  --ink: #F2EEE3;
+  --ink-soft: #B8B2A3;
+  --muted: #6C685F;
+  --rule: #2A2830;
+  --shade: #1C1C24;        /* elevated panel / figure backing */
+  --flare: #C8FF4A;        /* acid chartreuse — unique in the repo */
+  --flare-soft: #9DC83A;
 }
 
 html, body { background: var(--paper); color: var(--ink); }
@@ -41,10 +45,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-::selection { background: var(--bronze); color: var(--paper); }
+::selection { background: var(--flare); color: var(--paper); }
 
 :where(a, button, [role="button"], input, textarea, select):focus-visible {
-  outline: 2px solid var(--bronze);
+  outline: 2px solid var(--flare);
   outline-offset: 3px;
   border-radius: 1px;
 }
@@ -70,8 +74,11 @@ body {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.06;
-  mix-blend-mode: multiply;
+  /* On the dark ground, `multiply` would almost cancel the grain (black
+     onto near-black = invisible). `overlay` lifts highlights and deepens
+     shadows both — keeps the photographic texture legible on dark. */
+  opacity: 0.14;
+  mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 

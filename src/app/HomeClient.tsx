@@ -61,7 +61,7 @@ function TypewriterName({ name, reduced }: { name: string; reduced: boolean | nu
     <>
       {name.slice(0, shown)}
       {shown < name.length && (
-        <span className="inline-block w-[0.08em] -mb-[0.05em] align-baseline bg-bronze animate-pulse" style={{ height: "0.82em" }} />
+        <span className="inline-block w-[0.08em] -mb-[0.05em] align-baseline bg-flare animate-pulse" style={{ height: "0.82em" }} />
       )}
     </>
   );
@@ -87,7 +87,7 @@ function FramePair({
           className={`relative md:col-span-6 ${i === 0 ? (reversed ? "md:mt-16" : "") : reversed ? "" : "md:mt-20"}`}
         >
           <div
-            className="relative overflow-hidden bg-ecru grain"
+            className="relative overflow-hidden bg-shade grain"
             style={{
               aspectRatio: `${s.width ?? 720} / ${s.height ?? 900}`,
             }}
@@ -274,7 +274,7 @@ export default function HomeClient({ profile, categories, media }: Props) {
           <button
             type="button"
             onClick={copyEmail}
-            className="display block text-left text-[clamp(1.6rem,5vw,3rem)] tracking-[-0.02em] hover:text-bronze transition-colors"
+            className="display block text-left text-[clamp(1.6rem,5vw,3rem)] tracking-[-0.02em] hover:text-flare transition-colors"
             aria-label={t(translations.reach.copy_hint)}
           >
             {placeholderEmail}
