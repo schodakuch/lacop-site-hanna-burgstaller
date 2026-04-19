@@ -2,6 +2,16 @@
 
 Demo site for Hanna Burgstaller (hanna-burgstaller.lacop.site).
 
+## 2026-04-19 — Meta description: stop leaking hanna's taxonomy into other tenants
+- `generateMetadata()` fallback used a hard-coded tagline
+  `"a scrolling sequence. Stills, strides, turns."` — for any tenant
+  without a bio, their SEO meta would falsely advertise hanna's category
+  names. Now fetches `getCategories()` alongside the profile and weaves
+  the active customer's first three category names into the tagline:
+  `"<displayName> — a scrolling sequence: <cat1>, <cat2> and <cat3>."`.
+  Verified: primary emits "still, stride and turn"; sample-alt
+  (if bio-less) would emit "studio, street and editorial".
+
 ## 2026-04-19 — True multi-tenant shell
 - Shell was multi-tenant-*shaped* (LACOP_USER_SLUG env + resolvers) but
   HomeClient + Navigation were hard-coded to the category slugs

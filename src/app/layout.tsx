@@ -29,11 +29,20 @@ const mono = Geist_Mono({
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hanna-burgstaller.lacop.site";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const profile = await getProfile();
+  const [profile, categories] = await Promise.all([getProfile(), getCategories()]);
   const displayName = profile.display_name ?? profile.slug;
+  // Weave the customer's first three category names into the fallback
+  // description so the meta line describes *this* tenant's work, not a
+  // different customer's taxonomy (pre-fix, this always said
+  // "Stills, strides, turns" even when the active tenant had different
+  // categories — see PITFALLS § 4).
+  const names = categories.slice(0, 3).map((c) => c.name.toLowerCase());
+  const tagline =
+    names.length >= 2
+      ? `${names.slice(0, -1).join(", ")} and ${names.slice(-1)[0]}`
+      : names[0] ?? "a scrolling sequence";
   const description =
-    profile.bio ??
-    `${displayName} — a scrolling sequence. Stills, strides, turns.`;
+    profile.bio ?? `${displayName} — a scrolling sequence: ${tagline}.`;
 
   return {
     metadataBase: new URL(SITE_URL),
