@@ -1,25 +1,46 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLang } from "@/context/LanguageContext";
-import { useProfile } from "@/context/ProfileContext";
-import { scenes, translations } from "@/data/content";
+import { useCategories, useProfile } from "@/context/ProfileContext";
+import { fixedScenes, translations } from "@/data/content";
 
 // Right-edge minimap — the only chrome on the site.
-// Every other site in this repo has a top bar or a left rail; this one has
-// scene dots on the right that track IntersectionObserver entries.
-// Mobile falls back to a top-right language toggle + compact dot column.
+// Scene 01 Hello + 05 Process + 06 Reach are the fixed narrative bookends;
+// scenes 02/03/04 are built from the active customer's first three
+// categories (any names). Flipping LACOP_USER_SLUG changes which profile is
+// rendered without touching this file.
+
+type SceneRow = { key: string; n: string; anchor: string; label: string };
 
 export default function Navigation() {
   const { lang, toggle, t } = useLang();
   const profile = useProfile();
+  const categories = useCategories();
   const displayName = profile.display_name ?? profile.slug;
   const firstName = displayName.split(" ")[0];
   const lastName = displayName.split(" ").slice(1).join(" ");
-  const [activeKey, setActiveKey] = useState<string>("hello");
+
+  const scenes: SceneRow[] = useMemo(() => {
+    const contentScenes: SceneRow[] = categories.slice(0, 3).map((c, i) => ({
+      key: c.slug || `cat-${i}`,
+      n: String(i + 2).padStart(2, "0"),
+      anchor: `#scene-${String(i + 2).padStart(2, "0")}`,
+      label: c.name,
+    }));
+    return [
+      { key: "hello", n: fixedScenes.hello.n, anchor: fixedScenes.hello.anchor, label: t(translations.nav.hello) },
+      ...contentScenes,
+      { key: "process", n: fixedScenes.process.n, anchor: fixedScenes.process.anchor, label: t(translations.nav.process) },
+      { key: "reach", n: fixedScenes.reach.n, anchor: fixedScenes.reach.anchor, label: t(translations.nav.reach) },
+    ];
+  }, [categories, lang, t]);
+
+  const [activeKey, setActiveKey] = useState<string>(scenes[0]?.key ?? "hello");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    const map = new Map(scenes.map((s) => [s.anchor.replace("#", ""), s.key]));
     const els = scenes
       .map((s) => document.querySelector(s.anchor))
       .filter((el): el is HTMLElement => el instanceof HTMLElement);
@@ -31,20 +52,22 @@ export default function Navigation() {
           .filter((e) => e.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
         if (!visible) return;
-        const key = visible.target.id.replace("scene-", "");
-        const scene = scenes.find((s) => s.n === key);
-        if (scene) setActiveKey(scene.key);
+        const key = map.get(visible.target.id);
+        if (key) setActiveKey(key);
       },
       { rootMargin: "-40% 0px -40% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] },
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, []);
+  }, [scenes]);
 
   const go = (anchor: string) => {
     const el = document.querySelector(anchor);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+  const lastScene = scenes[scenes.length - 1];
+  const currentN = scenes.find((s) => s.key === activeKey)?.n ?? scenes[0]?.n ?? "01";
 
   return (
     <>
@@ -80,7 +103,7 @@ export default function Navigation() {
               type="button"
               onClick={() => go(s.anchor)}
               className="group flex items-center gap-3 py-1"
-              aria-label={`Scene ${s.n} — ${t(translations.nav[s.key])}`}
+              aria-label={`Scene ${s.n} — ${s.label}`}
               aria-current={active ? "true" : undefined}
             >
               <span
@@ -90,7 +113,7 @@ export default function Navigation() {
                     : "text-muted opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0"
                 }`}
               >
-                {s.n} · {t(translations.nav[s.key])}
+                {s.n} · {s.label}
               </span>
               <span
                 aria-hidden
@@ -116,7 +139,7 @@ export default function Navigation() {
       {/* Mobile — top-right strip with scene number + language */}
       <div className="md:hidden fixed top-5 right-5 z-40 flex items-center gap-4">
         <span className="mono text-[0.66rem] tracking-[0.22em] text-muted tabular-nums">
-          {scenes.find((s) => s.key === activeKey)?.n ?? "01"} / {scenes[scenes.length - 1].n}
+          {currentN} / {lastScene?.n ?? "06"}
         </span>
         <button
           type="button"

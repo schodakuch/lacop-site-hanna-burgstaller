@@ -2,6 +2,29 @@
 
 Demo site for Hanna Burgstaller (hanna-burgstaller.lacop.site).
 
+## 2026-04-19 — True multi-tenant shell
+- Shell was multi-tenant-*shaped* (LACOP_USER_SLUG env + resolvers) but
+  HomeClient + Navigation were hard-coded to the category slugs
+  `still / stride / turn`, so flipping the env var would have broken the
+  page. Refactored: scenes 02/03/04 now derive positionally from the
+  active customer's first three categories, with `category.name` as the
+  big display label. Tempo words and generic captions are positional
+  (`tempoByIndex[0..2]`, `captionByIndex[0..2]`) — the hanna shell's
+  voice is preserved regardless of which customer is rendered.
+- `ProfileContext` extended to carry `{ profile, categories }`; layout
+  fetches both and passes them through. Navigation reads categories via
+  `useCategories()` and builds its minimap scene list dynamically.
+- `src/data/content.ts` dropped slug-specific keys
+  (`translations.nav.still/stride/turn`, `translations.still/stride/turn.caption`,
+  `translations.scene.held/in_motion/pivot`) in favour of positional
+  `tempoByIndex` and `captionByIndex` arrays plus fixed-scene bookends
+  (01 Hello / 05 Process / 06 Reach).
+- Seeded a second demo profile in `src/data/mock.ts` (`sample-alt`,
+  categories: Studio / Street / Editorial) so the multi-tenancy is
+  testable end-to-end. `LACOP_USER_SLUG=sample-alt npm run build` now
+  generates a completely different customer through the same visual
+  shell — proving the env-var swap works.
+
 ## 2026-04-18 — Initial scaffold (Kinetic Typography / Runway / single-page scrolljack)
 - Cloned `sites/carina-rebecca` as scaffolding base for the env-driven multi-customer shell + LACOP data shape; then rebuilt the entire visual + structural layer against `SITE-SYSTEM.md § 2-11` catalogues so every axis diverges from existing sites.
 - **Lane**: Kinetic Typography (unused in repo).

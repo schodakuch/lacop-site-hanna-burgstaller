@@ -14,13 +14,12 @@ import {
 } from "framer-motion";
 import { useEffect, useState } from "react";
 import type { Profile, Category, Media } from "@/lib/types";
-import { translations } from "@/data/content";
+import { captionByIndex, tempoByIndex, translations } from "@/data/content";
 import { useLang } from "@/context/LanguageContext";
 
 type Props = { profile: Profile; categories: Category[]; media: Media[] };
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
-const PLACEHOLDER_EMAIL = "hello@hanna-burgstaller.example";
 
 // Scroll-velocity-driven font-variation-settings for the display face.
 // Fraunces exposes opsz, SOFT, and WONK — we feed a clamped absolute
@@ -144,19 +143,19 @@ export default function HomeClient({ profile, categories, media }: Props) {
   const axes = useKineticAxes(reduced);
 
   const displayName = profile.display_name ?? profile.slug;
+  const placeholderEmail = `hello@${profile.slug}.example`;
 
-  const still = categories.find((c) => c.slug === "still");
-  const stride = categories.find((c) => c.slug === "stride");
-  const turn = categories.find((c) => c.slug === "turn");
-
-  const byCategory = (catId: string | undefined) =>
-    catId ? media.filter((m) => m.category_id === catId) : [];
+  // Scenes 02/03/04 are the customer's first three categories, positional —
+  // any customer's taxonomy flows through the shell without code change.
+  const contentCategories = categories.slice(0, 3);
+  const byCategory = (catId: string) =>
+    media.filter((m) => m.category_id === catId);
 
   // One-line email copy interaction
   const [copied, setCopied] = useState(false);
   const copyEmail = async () => {
     try {
-      await navigator.clipboard.writeText(PLACEHOLDER_EMAIL);
+      await navigator.clipboard.writeText(placeholderEmail);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1800);
     } catch {
@@ -203,53 +202,31 @@ export default function HomeClient({ profile, categories, media }: Props) {
         </div>
       </section>
 
-      {/* Scene 02 — Still */}
-      {still && (
-        <section id="scene-02" className="px-5 md:px-16 lg:px-24 py-24 md:py-32">
-          <SceneHeading
-            n="02"
-            label={t(translations.nav.still)}
-            tempoWord={t(translations.scene.held)}
-            axes={axes}
-          />
-          <p className="max-w-[44ch] text-[1.02rem] text-ink-soft leading-relaxed">
-            {t(translations.still.caption)}
-          </p>
-          <FramePair shots={byCategory(still.id)} alt={still.name} />
-        </section>
-      )}
-
-      {/* Scene 03 — Stride */}
-      {stride && (
-        <section id="scene-03" className="px-5 md:px-16 lg:px-24 py-24 md:py-32">
-          <SceneHeading
-            n="03"
-            label={t(translations.nav.stride)}
-            tempoWord={t(translations.scene.in_motion)}
-            axes={axes}
-          />
-          <p className="max-w-[44ch] text-[1.02rem] text-ink-soft leading-relaxed">
-            {t(translations.stride.caption)}
-          </p>
-          <FramePair shots={byCategory(stride.id)} reversed alt={stride.name} />
-        </section>
-      )}
-
-      {/* Scene 04 — Turn */}
-      {turn && (
-        <section id="scene-04" className="px-5 md:px-16 lg:px-24 py-24 md:py-32">
-          <SceneHeading
-            n="04"
-            label={t(translations.nav.turn)}
-            tempoWord={t(translations.scene.pivot)}
-            axes={axes}
-          />
-          <p className="max-w-[44ch] text-[1.02rem] text-ink-soft leading-relaxed">
-            {t(translations.turn.caption)}
-          </p>
-          <FramePair shots={byCategory(turn.id)} alt={turn.name} />
-        </section>
-      )}
+      {/* Scenes 02/03/04 — positional from customer's first three categories */}
+      {contentCategories.map((cat, i) => {
+        const n = String(i + 2).padStart(2, "0");
+        const reversed = i === 1;
+        const tempo = tempoByIndex[i] ?? tempoByIndex[0];
+        const caption = captionByIndex[i] ?? captionByIndex[0];
+        return (
+          <section
+            key={cat.id}
+            id={`scene-${n}`}
+            className="px-5 md:px-16 lg:px-24 py-24 md:py-32"
+          >
+            <SceneHeading
+              n={n}
+              label={cat.name}
+              tempoWord={t(tempo)}
+              axes={axes}
+            />
+            <p className="max-w-[44ch] text-[1.02rem] text-ink-soft leading-relaxed">
+              {t(caption)}
+            </p>
+            <FramePair shots={byCategory(cat.id)} reversed={reversed} alt={cat.name} />
+          </section>
+        );
+      })}
 
       {/* Scene 05 — Process */}
       <section
@@ -264,7 +241,7 @@ export default function HomeClient({ profile, categories, media }: Props) {
         />
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
           <p className="md:col-span-7 text-[1.08rem] leading-relaxed max-w-[56ch]">
-            {t(translations.process.body)}
+            {profile.about ?? t(translations.process.body)}
           </p>
           <aside className="md:col-span-4 md:col-start-9 mono text-[0.7rem] tracking-[0.18em] text-muted space-y-2 self-start">
             {Object.keys(profile.stats).length === 0 && (
@@ -273,9 +250,11 @@ export default function HomeClient({ profile, categories, media }: Props) {
             {profile.agencies.length === 0 && (
               <p>— {t(translations.process.agencies_empty)}</p>
             )}
-            <p className="pt-3 rule-t">
-              {t(translations.process.placeholder_note)}
-            </p>
+            {profile.about === null && (
+              <p className="pt-3 rule-t">
+                {t(translations.process.placeholder_note)}
+              </p>
+            )}
           </aside>
         </div>
       </section>
@@ -298,7 +277,7 @@ export default function HomeClient({ profile, categories, media }: Props) {
             className="display block text-left text-[clamp(1.6rem,5vw,3rem)] tracking-[-0.02em] hover:text-bronze transition-colors"
             aria-label={t(translations.reach.copy_hint)}
           >
-            {PLACEHOLDER_EMAIL}
+            {placeholderEmail}
           </button>
           <span className="mono mt-3 block text-[0.68rem] tracking-[0.22em] text-muted uppercase">
             {copied ? t(translations.reach.copied) : t(translations.reach.copy_hint)}

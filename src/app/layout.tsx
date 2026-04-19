@@ -4,7 +4,7 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { ProfileProvider } from "@/context/ProfileContext";
-import { getProfile } from "@/lib/lacop";
+import { getCategories, getProfile } from "@/lib/lacop";
 import "./globals.css";
 
 const display = Fraunces({
@@ -72,7 +72,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const profile = await getProfile();
+  const [profile, categories] = await Promise.all([getProfile(), getCategories()]);
   const displayName = profile.display_name ?? profile.slug;
 
   const personSchema = {
@@ -104,7 +104,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         >
           Skip to content
         </a>
-        <ProfileProvider profile={profile}>
+        <ProfileProvider profile={profile} categories={categories}>
           <LanguageProvider>
             <Navigation />
             <main id="main" className="flex-1">

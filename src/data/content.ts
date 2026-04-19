@@ -1,24 +1,48 @@
-// UI copy only — LACOP profile data lives in src/data/mock.ts, read via
-// async resolvers in src/lib/lacop.ts.
+// UI copy only — LACOP profile data (display_name, categories, media) lives
+// in src/data/mock.ts and is read via async resolvers in src/lib/lacop.ts.
 //
-// Runway vocabulary: "scenes" not "pages". One URL, six scenes, a minimap
-// tracks position. Numbering is part of the type system so it lives here.
+// Multi-tenant shell: scenes 01/05/06 are the fixed narrative bookends
+// (Hello / Process / Reach) and belong to the hanna-burgstaller visual
+// concept ("three rhythms on a runway"). Scenes 02/03/04 are derived at
+// render time from the active customer's first three categories — whatever
+// names they use — so flipping LACOP_USER_SLUG swaps the whole content tier
+// without touching the shell's voice. Tempo words and captions are
+// positional (index 0/1/2), not slug-bound.
 
-export const scenes = [
-  { n: "01", key: "hello" as const, anchor: "#scene-01" },
-  { n: "02", key: "still" as const, anchor: "#scene-02" },
-  { n: "03", key: "stride" as const, anchor: "#scene-03" },
-  { n: "04", key: "turn" as const, anchor: "#scene-04" },
-  { n: "05", key: "process" as const, anchor: "#scene-05" },
-  { n: "06", key: "reach" as const, anchor: "#scene-06" },
+export const fixedScenes = {
+  hello: { n: "01", anchor: "#scene-01" },
+  process: { n: "05", anchor: "#scene-05" },
+  reach: { n: "06", anchor: "#scene-06" },
+} as const;
+
+// Tempo eyebrow applied to category at index i. Site-level voice — every
+// customer deployed through this shell inherits this three-beat rhythm.
+export const tempoByIndex = [
+  { en: "held", de: "gehalten" },
+  { en: "in motion", de: "in Bewegung" },
+  { en: "pivot", de: "Drehpunkt" },
+];
+
+// Caption applied to category at index i. Kept generic enough to read
+// sensibly against any category name the customer uses.
+export const captionByIndex = [
+  {
+    en: "Held poses. The moment before the next one.",
+    de: "Gehaltene Posen. Der Moment vor dem nächsten.",
+  },
+  {
+    en: "Walking frames. Weight between two feet.",
+    de: "Laufende Frames. Gewicht zwischen zwei Füßen.",
+  },
+  {
+    en: "Pivots. The frame re-finds the subject.",
+    de: "Drehungen. Das Bild findet das Motiv neu.",
+  },
 ];
 
 export const translations = {
   nav: {
     hello: { en: "Hello", de: "Hallo" },
-    still: { en: "Still", de: "Still" },
-    stride: { en: "Stride", de: "Schritt" },
-    turn: { en: "Turn", de: "Wende" },
     process: { en: "Process", de: "Prozess" },
     reach: { en: "Reach", de: "Ansprache" },
     index: { en: "Index", de: "Index" },
@@ -31,51 +55,23 @@ export const translations = {
       de: "Sechs Szenen. Scrollen — die Schrift antwortet.",
     },
     invitation: {
-      en: "Begin with Still",
-      de: "Mit Still beginnen",
+      en: "Begin the sequence",
+      de: "Sequenz beginnen",
     },
     hint: {
       en: "The heading breathes with your scroll speed.",
       de: "Die Überschrift atmet mit deiner Scroll-Geschwindigkeit.",
     },
   },
-  scene: {
-    held: { en: "held", de: "gehalten" },
-    in_motion: { en: "in motion", de: "in Bewegung" },
-    pivot: { en: "pivot", de: "Drehpunkt" },
-    frame_count: {
-      one: { en: "1 frame", de: "1 Aufnahme" },
-      other: { en: "{n} frames", de: "{n} Aufnahmen" },
-    },
-    empty: { en: "to be filmed", de: "wird noch aufgenommen" },
-  },
-  still: {
-    caption: {
-      en: "Held poses. The moment before the next one.",
-      de: "Gehaltene Posen. Der Moment vor dem nächsten.",
-    },
-  },
-  stride: {
-    caption: {
-      en: "Walking frames. Weight between two feet.",
-      de: "Laufende Frames. Gewicht zwischen zwei Füßen.",
-    },
-  },
-  turn: {
-    caption: {
-      en: "Pivots. The frame re-finds the subject.",
-      de: "Drehungen. Das Bild findet das Motiv neu.",
-    },
-  },
   process: {
     heading: { en: "Process", de: "Prozess" },
     body: {
-      en: "A working diary will live here — call sheets, test frames, the ten minutes before a slate. For now, this scene is a placeholder until Hanna's own notes are in.",
-      de: "Hier wächst ein Arbeitsjournal — Dispositionen, Testaufnahmen, die zehn Minuten vor einer Klappe. Bis Hanna ihre Notizen einreicht, bleibt diese Szene ein Platzhalter.",
+      en: "A working diary will live here — call sheets, test frames, the ten minutes before a slate. For now, this scene is a placeholder until the subject's own notes are in.",
+      de: "Hier wächst ein Arbeitsjournal — Dispositionen, Testaufnahmen, die zehn Minuten vor einer Klappe. Bis eigene Notizen eingereicht sind, bleibt diese Szene ein Platzhalter.",
     },
     placeholder_note: {
-      en: "Placeholder — replace with Hanna's own wording before going live.",
-      de: "Platzhaltertext — vor dem Livegang durch Hannas eigene Worte ersetzen.",
+      en: "Placeholder — replace with the subject's own wording before going live.",
+      de: "Platzhaltertext — vor dem Livegang durch eigene Worte ersetzen.",
     },
     stats_empty: { en: "Measurements to come.", de: "Maße folgen." },
     agencies_empty: { en: "Representation to come.", de: "Agentur folgt." },
