@@ -2,6 +2,42 @@
 
 Demo site for Hanna Burgstaller (hanna-burgstaller.lacop.site).
 
+## 2026-04-20 — Back to single-page longscroll (diverge from carina)
+
+Reason: the previous 4-page booklet (cover / photos / about / contact with
+a numbered page ledger) overlapped Carina-Rebecca's "Lookbook" paradigm —
+same IA, same `01/02/03/04` decoration, same side-rail-ish nav idea, just
+inverted palette. The scroll-velocity kinetic type promised in CONCEPT.md
+only activated on isolated H1s, so the site's actual divergent interaction
+was buried.
+
+What changed:
+- Collapsed `/photos`, `/about`, `/contact` into six scenes on `/`
+  (cover → three rhythm scenes from `categories.slice(0, 3)` → process →
+  contact). The URLs, the `Pagination` component, the `usePages` hook,
+  and `src/lib/pages.ts` are gone. `sitemap.ts` now has one URL.
+- Replaced the "01 · Cover · 02 · Photos …" page-ledger nav with a
+  right-edge scene-dot minimap (labels on hover, active scene in flare)
+  wired to IntersectionObserver. No top bar on desktop; mobile keeps a
+  minimal "Jump to ▾" drawer.
+- Every scene heading reads `fontVariationSettings` from
+  `useKineticAxes()` — the scroll-velocity → Fraunces `opsz/wght/SOFT/WONK`
+  morph now drives the entire page instead of four isolated H1s.
+- Scenes 02/03/04 iterate `categories.slice(0, 3)` positionally (no
+  hard-coded slug lookups, per PITFALLS § 4). Labels come from
+  `category.name`; eyebrow + caption from `tempoByIndex[i]` /
+  `captionByIndex[i]`. LACOP shape flows untouched — `getProfile` /
+  `getCategories` / `getAllMedia` still resolve via `src/lib/lacop.ts`,
+  media still filtered by `category_id`, social links sanitised with
+  `safeUrl()`.
+- New `src/lib/scenes.ts` centralises the six scene IDs so HomeClient
+  and Navigation can't drift out of sync.
+
+Signature interaction (unchanged, now prominent): scroll velocity → spring
+→ clamped → mapped onto four Fraunces axes → applied via
+`useMotionTemplate` to every scene heading. Respects
+`useReducedMotion` (locks to still-state settings).
+
 ## 2026-04-19 — Multi-page refactor (cover / photos / about / contact)
 - Single-page scroll-through (scenes 01–06 stacked on `/`) replaced by
   a four-page site: `/` cover, `/photos` (stacked category sections +
