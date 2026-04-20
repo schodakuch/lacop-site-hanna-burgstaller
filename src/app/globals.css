@@ -26,7 +26,7 @@
   --ink: #F2EEE3;
   --ink-soft: #B8B2A3;
   --muted: #6C685F;
-  --rule: #2A2830;
+  --rule: #3A3840;         /* visible on the near-black ground */
   --shade: #1C1C24;        /* elevated panel / figure backing */
   --flare: #C8FF4A;        /* acid chartreuse — unique in the repo */
   --flare-soft: #9DC83A;

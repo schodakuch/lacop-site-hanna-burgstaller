@@ -108,15 +108,17 @@ export default function Navigation() {
         </span>
       </a>
 
-      {/* ───── Desktop scene minimap (right edge). max-h + overflow-y keeps
-          it usable when a tenant has many categories (e.g. 12+ rhythm
-          scenes on a short viewport). ───── */}
+      {/* ───── Desktop scene minimap (right edge). Always-visible labels
+          + numbered dots so visitors see the full scene list at load
+          instead of having to guess what a hairline means. max-h +
+          overflow-y keeps it usable when a tenant has many categories. */}
       <nav
         aria-label="Scenes"
-        className="hidden md:flex fixed top-1/2 right-6 lg:right-10 z-40 -translate-y-1/2 flex-col items-end gap-1 max-h-[72vh] overflow-y-auto pr-1"
+        className="hidden md:flex fixed top-1/2 right-4 lg:right-6 z-40 -translate-y-1/2 flex-col items-stretch gap-0 w-[200px] max-h-[80vh] overflow-y-auto border-l border-rule pl-4"
       >
-        {scenes.map((s) => {
+        {scenes.map((s, i) => {
           const isActive = active === s.id;
+          const n = String(i + 1).padStart(2, "0");
           return (
             <button
               key={s.id}
@@ -124,14 +126,19 @@ export default function Navigation() {
               onClick={() => jumpTo(s.id)}
               aria-current={isActive ? "true" : undefined}
               aria-label={`${t(s.label)} scene`}
-              className="group flex items-center gap-3 w-11 h-11 justify-end"
+              className="group grid grid-cols-[auto_1fr_auto] items-center gap-3 min-h-11 py-1 text-left"
             >
               <span
                 aria-hidden
-                className={`mono text-[0.62rem] tracking-[0.22em] uppercase transition-all ${
-                  isActive
-                    ? "text-flare opacity-100 translate-x-0"
-                    : "text-muted opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0"
+                className={`mono text-[0.6rem] tracking-[0.22em] tabular-nums transition-colors ${
+                  isActive ? "text-flare" : "text-muted group-hover:text-ink"
+                }`}
+              >
+                {n}
+              </span>
+              <span
+                className={`mono text-[0.62rem] tracking-[0.22em] uppercase truncate transition-colors ${
+                  isActive ? "text-flare" : "text-ink-soft group-hover:text-ink"
                 }`}
               >
                 {t(s.label)}
@@ -140,8 +147,8 @@ export default function Navigation() {
                 aria-hidden
                 className={`block rounded-full transition-all ${
                   isActive
-                    ? "w-[14px] h-[2px] bg-flare"
-                    : "w-[8px] h-[1px] bg-muted group-hover:bg-ink group-hover:w-[12px]"
+                    ? "w-[10px] h-[10px] bg-flare"
+                    : "w-[6px] h-[6px] bg-rule group-hover:bg-ink-soft"
                 }`}
               />
             </button>
@@ -151,7 +158,7 @@ export default function Navigation() {
           type="button"
           onClick={toggle}
           aria-label="Toggle language"
-          className="mono mt-4 pt-3 border-t border-rule text-[0.62rem] uppercase tracking-[0.24em] text-ink-soft hover:text-flare transition-colors"
+          className="mono self-start mt-3 pt-3 border-t border-rule text-[0.62rem] uppercase tracking-[0.24em] text-ink-soft hover:text-flare transition-colors"
         >
           {lang === "en" ? "DE" : "EN"}
         </button>

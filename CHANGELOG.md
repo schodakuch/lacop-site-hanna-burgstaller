@@ -2,6 +2,23 @@
 
 Demo site for Hanna Burgstaller (hanna-burgstaller.lacop.site).
 
+## 2026-04-20 — Discoverable desktop minimap (fix: nav looked absent)
+
+The earlier right-edge minimap used 1px×8px hairlines for inactive dots
+and hid scene labels until hover — which read as "no nav" at first
+glance. The active label was also being clipped by the minimap's own
+`overflow-y-auto` container (narrower than the label text), so even
+the active scene name showed up as partial ("OVER" for "COVER").
+
+- Widened the nav to 200px with a left rule + padding so it reads as
+  a proper chrome element. Each row: `NN  LABEL  •` always visible.
+- Real round dots: 10px flare for active, 6px muted for inactive; the
+  previous hairlines couldn't be found even when you knew they were
+  there.
+- Bumped `--rule` from `#2A2830` to `#3A3840` so the inter-scene
+  borders are visible on the near-black ground instead of blending
+  into it.
+
 ## 2026-04-20 — Variable category count (tenants can add / rename / remove)
 
 - Removed `categories.slice(0, 3)` in both HomeClient and Navigation.
