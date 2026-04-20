@@ -34,15 +34,15 @@ export default function HomeClient({ profile, categories, media }: Props) {
 
   return (
     <>
-      {/* HERO — type-dominant: big kinetic name + narrow inset portrait */}
-      <section className="relative px-5 md:px-10 lg:px-16 pt-6 md:pt-10 pb-12 md:pb-16">
-        <p className="mono text-[0.66rem] uppercase tracking-[0.28em] text-flare mb-4">
+      {/* HERO — type-dominant: kinetic name + small inset portrait */}
+      <section className="relative px-5 md:px-10 lg:px-16 pt-6 md:pt-8 pb-10 md:pb-12">
+        <p className="mono text-[0.62rem] uppercase tracking-[0.28em] text-flare mb-3">
           {profile.role} · {copy.nav.home}
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-end">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-8 items-end">
           <motion.h1
-            className="md:col-span-9 display text-[clamp(3rem,13vw,8.5rem)] text-ink"
+            className="md:col-span-9 display text-[clamp(2.4rem,9vw,5.4rem)] text-ink"
             style={{ fontVariationSettings: axes }}
           >
             <span className="block">{firstName}</span>
@@ -51,18 +51,18 @@ export default function HomeClient({ profile, categories, media }: Props) {
 
           {heroSrc && (
             <motion.div
-              initial={reduced ? false : { opacity: 0, y: 24 }}
+              initial={reduced ? false : { opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="md:col-span-3 relative"
             >
-              <div className="relative aspect-[3/4] overflow-hidden bg-shade grain max-h-[440px] md:max-h-[520px] mx-auto md:ml-auto md:mr-0 w-full max-w-[280px] md:max-w-none">
+              <div className="relative aspect-[3/4] overflow-hidden bg-shade grain max-h-[280px] md:max-h-[340px] mx-auto md:ml-auto md:mr-0 w-full max-w-[210px] md:max-w-none">
                 <Image
                   src={heroSrc}
                   alt={displayName}
                   fill
                   priority
-                  sizes="(min-width: 768px) 24vw, 70vw"
+                  sizes="(min-width: 768px) 20vw, 55vw"
                   className="object-cover"
                 />
               </div>
@@ -70,25 +70,23 @@ export default function HomeClient({ profile, categories, media }: Props) {
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 mt-8 md:mt-10">
-          <div className="md:col-span-9">
-            <p className="font-serif italic text-base md:text-lg text-ink-soft max-w-md">
-              {profile.bio ?? copy.home.tagline_fallback}
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-              <Link
-                href="/portfolio"
-                className="inline-flex items-center gap-3 mono text-[0.68rem] uppercase tracking-[0.24em] text-paper bg-flare px-6 py-3 hover:bg-flare-soft transition-colors"
-              >
-                {copy.home.categories_cta} →
-              </Link>
-              <Link
-                href="/contact"
-                className="hover-mark mono text-[0.68rem] uppercase tracking-[0.24em] text-ink-soft hover:text-flare"
-              >
-                {copy.nav.contact}
-              </Link>
-            </div>
+        <div className="mt-6 md:mt-8 max-w-md">
+          <p className="font-serif italic text-base text-ink-soft">
+            {profile.bio ?? copy.home.tagline_fallback}
+          </p>
+          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
+            <Link
+              href="/portfolio"
+              className="inline-flex items-center gap-3 mono text-[0.64rem] uppercase tracking-[0.24em] text-paper bg-flare px-5 py-2.5 hover:bg-flare-soft transition-colors"
+            >
+              {copy.home.categories_cta} →
+            </Link>
+            <Link
+              href="/contact"
+              className="hover-mark mono text-[0.64rem] uppercase tracking-[0.24em] text-ink-soft hover:text-flare"
+            >
+              {copy.nav.contact}
+            </Link>
           </div>
         </div>
       </section>
