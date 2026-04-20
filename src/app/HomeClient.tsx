@@ -34,24 +34,48 @@ export default function HomeClient({ profile, categories, media }: Props) {
 
   return (
     <>
-      {/* HERO */}
-      <section className="relative px-5 md:px-10 lg:px-16 pt-8 md:pt-14 pb-14 md:pb-20">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 items-end">
-          <div className="md:col-span-5 order-2 md:order-1">
-            <p className="mono text-[0.66rem] uppercase tracking-[0.28em] text-flare mb-4">
-              {profile.role} · {copy.nav.home}
-            </p>
-            <motion.h1
-              className="display text-[clamp(3.2rem,14vw,9rem)] text-ink"
-              style={{ fontVariationSettings: axes }}
+      {/* HERO — type-dominant: big kinetic name + narrow inset portrait */}
+      <section className="relative px-5 md:px-10 lg:px-16 pt-6 md:pt-10 pb-12 md:pb-16">
+        <p className="mono text-[0.66rem] uppercase tracking-[0.28em] text-flare mb-4">
+          {profile.role} · {copy.nav.home}
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-end">
+          <motion.h1
+            className="md:col-span-9 display text-[clamp(3rem,13vw,8.5rem)] text-ink"
+            style={{ fontVariationSettings: axes }}
+          >
+            <span className="block">{firstName}</span>
+            {lastName && <span className="block text-flare">{lastName}</span>}
+          </motion.h1>
+
+          {heroSrc && (
+            <motion.div
+              initial={reduced ? false : { opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              className="md:col-span-3 relative"
             >
-              <span className="block">{firstName}</span>
-              {lastName && <span className="block text-flare">{lastName}</span>}
-            </motion.h1>
-            <p className="font-serif italic text-lg md:text-xl text-ink-soft mt-6 max-w-md">
+              <div className="relative aspect-[3/4] overflow-hidden bg-shade grain max-h-[440px] md:max-h-[520px] mx-auto md:ml-auto md:mr-0 w-full max-w-[280px] md:max-w-none">
+                <Image
+                  src={heroSrc}
+                  alt={displayName}
+                  fill
+                  priority
+                  sizes="(min-width: 768px) 24vw, 70vw"
+                  className="object-cover"
+                />
+              </div>
+            </motion.div>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 mt-8 md:mt-10">
+          <div className="md:col-span-9">
+            <p className="font-serif italic text-base md:text-lg text-ink-soft max-w-md">
               {profile.bio ?? copy.home.tagline_fallback}
             </p>
-            <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
               <Link
                 href="/portfolio"
                 className="inline-flex items-center gap-3 mono text-[0.68rem] uppercase tracking-[0.24em] text-paper bg-flare px-6 py-3 hover:bg-flare-soft transition-colors"
@@ -66,27 +90,6 @@ export default function HomeClient({ profile, categories, media }: Props) {
               </Link>
             </div>
           </div>
-
-          {/* Hero image */}
-          {heroSrc && (
-            <motion.div
-              initial={reduced ? false : { opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              className="md:col-span-7 order-1 md:order-2 relative"
-            >
-              <div className="relative aspect-[4/5] md:aspect-[3/4] overflow-hidden bg-shade grain">
-                <Image
-                  src={heroSrc}
-                  alt={displayName}
-                  fill
-                  priority
-                  sizes="(min-width: 768px) 55vw, 100vw"
-                  className="object-cover"
-                />
-              </div>
-            </motion.div>
-          )}
         </div>
       </section>
 
@@ -114,18 +117,12 @@ export default function HomeClient({ profile, categories, media }: Props) {
           </div>
 
           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {categories.map((cat, i) => {
+            {categories.map((cat) => {
               const cover =
                 cat.cover_image_url ||
                 media.find((m) => m.category_id === cat.id)?.url;
               return (
-                <motion.li
-                  key={cat.id}
-                  initial={reduced ? false : { opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-10% 0px" }}
-                  transition={{ duration: 0.7, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
-                >
+                <li key={cat.id}>
                   <Link
                     href={`/portfolio?category=${cat.slug}`}
                     className="group block"
@@ -151,7 +148,7 @@ export default function HomeClient({ profile, categories, media }: Props) {
                       </div>
                     </div>
                   </Link>
-                </motion.li>
+                </li>
               );
             })}
           </ul>
