@@ -2,6 +2,46 @@
 
 Demo site for Hanna Burgstaller (hanna-burgstaller.lacop.site).
 
+## 2026-04-20 — Multi-page shell for lacop.app template use
+
+Back to multi-page, deliberately. The onepager version only surfaced
+two frames per category, which doesn't work for LACOP tenants with
+larger galleries — customers need the full library reachable. Four
+routes now: `/` cover, `/photos` full library, `/process` (was
+/about), `/contact`.
+
+Divergence from carina / lea — this is NOT a re-run of the old
+booklet. Kept everything that was distinctly hanna:
+
+- Right-edge minimap (not carina's left side rail, not lea's top bar).
+  Route entries rendered as `NN  LABEL  •` always-visible.
+- Dark palette with acid chartreuse accent.
+- Kinetic-type H1 on every page (scroll-velocity → Fraunces axes),
+  typewriter reveal on the cover name.
+- "Process" as the about URL + voice (working diary, not a bio+stats
+  page). Runway/sequence vocabulary preserved across pages.
+- `/photos` treatment differs from carina's sticky scroll-spy grid:
+  staggered offset per category (FramePair with alternating sides)
+  plus a staggered gallery grid for all remaining frames
+  (`mt-10` / `mt-20` stagger on odd/even indices). No sticky strip —
+  the minimap is the scroll navigation.
+
+LACOP data shape still compliant: positional category iteration, no
+hard-coded slug lookups (grep returns zero), `safeUrl()` on
+social_links, empty-state handling for stats / agencies / about.
+`/photos` now shows FramePair + full remaining frames, so customers
+with 30 photos per category see all of them.
+
+Removed: `src/lib/scenes.ts` (scene-IDs obsolete). Added:
+`src/lib/routes.ts`, `src/components/FramePair.tsx`,
+`src/app/photos/`, `src/app/process/`, `src/app/contact/`.
+
+Verified: both `npm run build` and `LACOP_USER_SLUG=sample-alt npm run
+build` pass with 4 prerendered routes each; playwright audit on 1440
+/ 375 / 390 green (200 on every route, correct H1 per page, active
+minimap / drawer entry, 3 category sections on /photos, no console
+errors); banned-trope grep zero; hard-coded-slug grep zero.
+
 ## 2026-04-20 — Discoverable desktop minimap (fix: nav looked absent)
 
 The earlier right-edge minimap used 1px×8px hairlines for inactive dots
