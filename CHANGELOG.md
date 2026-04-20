@@ -2,6 +2,23 @@
 
 Demo site for Hanna Burgstaller (hanna-burgstaller.lacop.site).
 
+## 2026-04-20 — Variable category count (tenants can add / rename / remove)
+
+- Removed `categories.slice(0, 3)` in both HomeClient and Navigation.
+  The onepager now renders one rhythm scene per visible category, in
+  `sort_order`, however many the tenant has. Scene numbering for
+  Process and Contact trails the rhythm count
+  (`rhythmCategories.length + 2` / `+ 3`) so the decoration stays in
+  sync when customers rename or reorder categories in the LACOP app.
+- `tempoByIndex` / `captionByIndex` wrap via modulo — site-level voice
+  carries through for any N. The bottom-of-cover hint strip now echoes
+  the tenant's actual category names rather than a hard-coded
+  "still · stride · turn".
+- 0-category fallback: the cover CTA jumps straight to Process if no
+  rhythm scenes exist (e.g. a brand-new account with no uploads yet).
+- Desktop minimap wraps with `max-h-[72vh] overflow-y-auto` so a tenant
+  with many categories stays usable on short viewports.
+
 ## 2026-04-20 — Back to single-page longscroll (diverge from carina)
 
 Reason: the previous 4-page booklet (cover / photos / about / contact with

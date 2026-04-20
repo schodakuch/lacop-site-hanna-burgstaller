@@ -184,7 +184,12 @@ export default function HomeClient({ profile, categories, media }: Props) {
   const firstName = displayName.split(" ")[0];
   const lastName = displayName.split(" ").slice(1).join(" ");
 
-  const rhythmCategories = useMemo(() => categories.slice(0, 3), [categories]);
+  // Rhythm scenes = every visible category, in `sort_order`. The tenant
+  // can rename / add / remove / reorder categories in the LACOP app and
+  // this page reflows automatically. tempoByIndex + captionByIndex wrap
+  // via modulo, so site-level voice carries through for any count — 1
+  // category or 12.
+  const rhythmCategories = categories;
 
   const mediaByCategory = useMemo(() => {
     const map = new Map<string, Media[]>();
@@ -208,9 +213,21 @@ export default function HomeClient({ profile, categories, media }: Props) {
     }
   };
 
+  // The little rhythm strip at the bottom of the cover — echoes the
+  // scene labels in order. Derived from the active tenant so a customer
+  // with { Studio, Street, Editorial } sees their own taxonomy, not
+  // hanna's. Falls back to a short manifesto if there are zero
+  // categories (e.g. brand-new account).
   const hintRotator = useMemo(
-    () => ["still", "stride", "turn", "process", "contact"],
-    [],
+    () =>
+      rhythmCategories.length > 0
+        ? [
+            ...rhythmCategories.map((c) => c.name.toLowerCase()),
+            t(translations.process.heading).toLowerCase(),
+            t(translations.contact.heading).toLowerCase(),
+          ]
+        : [t(translations.cover.hint).split(".")[0].toLowerCase()],
+    [rhythmCategories, t],
   );
 
   return (
@@ -239,7 +256,9 @@ export default function HomeClient({ profile, categories, media }: Props) {
           {profile.bio ?? t(translations.cover.subtitle)}
         </p>
         <a
-          href={`#${rhythmSceneId(0)}`}
+          href={`#${
+            rhythmCategories.length > 0 ? rhythmSceneId(0) : SCENE_IDS.process
+          }`}
           className="mono inline-block mt-10 md:mt-12 text-[0.78rem] tracking-[0.22em] uppercase hover-mark w-fit"
         >
           {t(translations.cover.invitation)} ↓
@@ -255,9 +274,12 @@ export default function HomeClient({ profile, categories, media }: Props) {
         </span>
       </section>
 
-      {/* ───── Scenes 02/03/04 — Rhythm scenes (categories) ───── */}
+      {/* ───── Rhythm scenes (one per visible category, in sort order) ───── */}
       {rhythmCategories.map((cat, i) => {
         const shots = (mediaByCategory.get(cat.id) ?? []).slice(0, 2);
+        // Positional eyebrow + caption — wrap with modulo so any count
+        // works (1 category or 12). Tempo/caption repeat for i ≥ 3;
+        // that's site-level voice, not tenant-specific.
         const tempo = tempoByIndex[i % tempoByIndex.length];
         const caption = captionByIndex[i % captionByIndex.length];
         const n = String(i + 2).padStart(2, "0");
@@ -294,12 +316,15 @@ export default function HomeClient({ profile, categories, media }: Props) {
         );
       })}
 
-      {/* ───── Scene 05 — Process (was /about) ───── */}
+      {/* ───── Process (was /about) — scene number trails the rhythm count ───── */}
       <section
         id={SCENE_IDS.process}
         className="relative scroll-mt-24 px-5 md:px-16 lg:px-24 py-24 md:py-36 max-w-[1400px] mx-auto border-t border-rule"
       >
-        <SceneMeta index="05" tempo={t(translations.process.tempo)} />
+        <SceneMeta
+          index={String(rhythmCategories.length + 2).padStart(2, "0")}
+          tempo={t(translations.process.tempo)}
+        />
         <motion.h2
           className="display mt-5 text-[clamp(2.8rem,10vw,6.8rem)] max-w-[16ch]"
           style={{ fontVariationSettings: axes as MotionValue<string> }}
@@ -326,12 +351,15 @@ export default function HomeClient({ profile, categories, media }: Props) {
         </div>
       </section>
 
-      {/* ───── Scene 06 — Contact ───── */}
+      {/* ───── Contact (final scene) ───── */}
       <section
         id={SCENE_IDS.contact}
         className="relative scroll-mt-24 px-5 md:px-16 lg:px-24 py-24 md:py-40 max-w-[1400px] mx-auto border-t border-rule"
       >
-        <SceneMeta index="06" tempo={t(translations.contact.tempo)} />
+        <SceneMeta
+          index={String(rhythmCategories.length + 3).padStart(2, "0")}
+          tempo={t(translations.contact.tempo)}
+        />
         <motion.h2
           className="display mt-5 text-[clamp(2.6rem,9vw,5.8rem)] max-w-[18ch]"
           style={{ fontVariationSettings: axes as MotionValue<string> }}

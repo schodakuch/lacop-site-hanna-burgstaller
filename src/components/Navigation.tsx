@@ -25,8 +25,12 @@ export default function Navigation() {
   const firstName = displayName.split(" ")[0];
   const lastName = displayName.split(" ").slice(1).join(" ");
 
+  // One minimap entry per visible category (any count — tenant can add /
+  // rename / remove in LACOP). Labels come from `category.name` so both
+  // language variants inherit the tenant's own wording; tempo/eyebrow
+  // voice is applied inside HomeClient, the minimap stays neutral.
   const scenes: SceneEntry[] = useMemo(() => {
-    const rhythm = categories.slice(0, 3).map((c, i): SceneEntry => ({
+    const rhythm = categories.map((c, i): SceneEntry => ({
       id: rhythmSceneId(i),
       kind: "rhythm",
       label: { en: c.name, de: c.name },
@@ -104,10 +108,12 @@ export default function Navigation() {
         </span>
       </a>
 
-      {/* ───── Desktop scene minimap (right edge) ───── */}
+      {/* ───── Desktop scene minimap (right edge). max-h + overflow-y keeps
+          it usable when a tenant has many categories (e.g. 12+ rhythm
+          scenes on a short viewport). ───── */}
       <nav
         aria-label="Scenes"
-        className="hidden md:flex fixed top-1/2 right-6 lg:right-10 z-40 -translate-y-1/2 flex-col items-end gap-1"
+        className="hidden md:flex fixed top-1/2 right-6 lg:right-10 z-40 -translate-y-1/2 flex-col items-end gap-1 max-h-[72vh] overflow-y-auto pr-1"
       >
         {scenes.map((s) => {
           const isActive = active === s.id;
