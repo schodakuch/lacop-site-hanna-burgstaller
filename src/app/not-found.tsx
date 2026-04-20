@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { translations } from "@/data/content";
+import { copy } from "@/data/copy";
 
 export default function NotFound() {
   return (
@@ -8,17 +8,17 @@ export default function NotFound() {
         — / —
       </span>
       <h1 className="display mt-6 text-[clamp(2.8rem,8vw,5.4rem)]">
-        {translations.notfound.heading.en}
+        {copy.notfound.heading}
       </h1>
       <p className="mt-5 text-[1.02rem] leading-relaxed text-ink-soft">
-        {translations.notfound.body.en}
+        {copy.notfound.body}
       </p>
       <div className="mt-10">
         <Link
           href="/"
           className="mono text-[0.72rem] uppercase tracking-[0.22em] text-ink hover-mark"
         >
-          ← {translations.notfound.home.en}
+          ← {copy.notfound.home}
         </Link>
       </div>
     </article>

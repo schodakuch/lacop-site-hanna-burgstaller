@@ -2,6 +2,40 @@
 
 Demo site for Hanna Burgstaller (hanna-burgstaller.lacop.site).
 
+## 2026-04-20 — Align with LACOP standard portfolio shape (chiara-ebner pattern)
+
+Restructured to the canonical four-route pattern used by every shipping
+LACOP portfolio (chiara-ebner.lacop.site is the reference build):
+
+- **DE-only.** Removed `LanguageContext` and every `t()` call. Copy
+  collapsed to `src/data/copy.ts` (single string table). `html lang="de"`,
+  OG locale `de_DE`. Per client brief 2026-04-20: one language per site.
+- **Routes:** `/`, `/portfolio`, `/about`, `/contact`, `/impressum`.
+  Dropped `/photos` and `/process` (the rhythm-named single-page IA).
+  `/portfolio` reads `?category=<slug>` so home-page category cards
+  deep-link into the filter.
+- **Hero is now a photograph.** `hero_image_url || media[0] ||
+  profile_image_url` chain (LACOP-DATA-SHAPE § 12.1). Fraunces kinetic
+  axes still drive the name + section headings — the signature
+  interaction survives, just not as the hero itself.
+- **/about:** portrait + bio + stats (Object.entries, per § 15.3) +
+  agencies + custom_links, with empty-state placeholders ("Kurzbio folgt."
+  / "Maße folgen.") for every field hanna hasn't populated yet.
+- **/contact:** classic form (Name / E-Mail / Betreff / Nachricht +
+  "Nachricht senden"). Opens a mailto: when submitted.
+- **Navigation:** top bar + mobile drawer (replaces the right-edge
+  minimap — that was a single-page-longscroll paradigm and doesn't
+  map onto a four-route IA).
+- **Footer:** `© YYYY Display Name · Alle Rechte vorbehalten ·
+  Impressum | Instagram  Nach oben ↑  Portfolio by LACOP`.
+- Preserved: Fraunces SOFT/WONK/opsz axes, `useKineticAxes()`, dark
+  paper + chartreuse flare palette, grain overlay, hover-mark
+  underline. Removed `FramePair.tsx` (no longer referenced).
+
+Lane: Kinetic Typography (preserved) · Metaphor: Dark stage · Page
+model: Classic four-route · Nav: Top bar · IA: By category
+(LACOP-standard).
+
 ## 2026-04-20 — Multi-page shell for lacop.app template use
 
 Back to multi-page, deliberately. The onepager version only surfaced

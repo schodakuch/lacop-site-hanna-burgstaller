@@ -1,119 +1,202 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { motion, useReducedMotion, type MotionValue } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
-import type { Category, Profile } from "@/lib/types";
-import { translations } from "@/data/content";
-import { useLang } from "@/context/LanguageContext";
+import { motion, useReducedMotion } from "framer-motion";
+import { copy } from "@/data/copy";
 import { useKineticAxes } from "@/lib/kinetic";
+import type { Category, Media, Profile } from "@/lib/types";
 
-type Props = { profile: Profile; categories: Category[] };
+// Four-route home. Hero uses hero_image_url with the standard LACOP
+// fallback chain (hero_image_url || media[0]?.url || profile_image_url).
+// Kinetic display axes stay — they're the site's signature — but
+// applied to the section headings rather than as the hero itself.
 
-// Cover page — kinetic type wall, typewriter name reveal, single CTA
-// into /photos. The scroll-velocity → Fraunces axes morph still drives
-// the display heading here; it rides through every page via
-// useKineticAxes() so the signature carries across routes (not just on
-// the cover). Navigation chrome (right-edge minimap on desktop, top
-// bar + drawer on mobile) lives in src/components/Navigation.tsx.
-//
-// Scenes 02+ from the previous longscroll are now their own pages:
-// /photos, /process, /contact. That reinstates the customer's full
-// library — the runway onepager only showed 2 frames per category,
-// which didn't work for LACOP tenants with larger galleries.
+type Props = {
+  profile: Profile;
+  categories: Category[];
+  media: Media[];
+};
 
-function TypewriterName({
-  name,
-  reduced,
-}: {
-  name: string;
-  reduced: boolean | null;
-}) {
-  const [shown, setShown] = useState(reduced ? name.length : 0);
-  useEffect(() => {
-    if (reduced) return;
-    let i = 0;
-    const id = setInterval(() => {
-      i += 1;
-      setShown(i);
-      if (i >= name.length) clearInterval(id);
-    }, 55);
-    return () => clearInterval(id);
-  }, [name, reduced]);
+export default function HomeClient({ profile, categories, media }: Props) {
+  const reduced = useReducedMotion();
+  const axes = useKineticAxes(reduced ?? null);
+  const displayName = profile.display_name ?? profile.slug;
+  const [firstName, ...rest] = displayName.split(" ");
+  const lastName = rest.join(" ");
+
+  const heroSrc =
+    profile.hero_image_url || media[0]?.url || profile.profile_image_url;
+
+  const stats = profile.stats ?? {};
+  const hasStats = Object.keys(stats).length > 0;
+  const hasBio = Boolean(profile.bio);
+
   return (
     <>
-      {name.slice(0, shown)}
-      {shown < name.length && (
-        <span
-          className="inline-block w-[0.08em] -mb-[0.05em] align-baseline bg-flare animate-pulse"
-          style={{ height: "0.82em" }}
-        />
+      {/* HERO */}
+      <section className="relative px-5 md:px-10 lg:px-16 pt-8 md:pt-14 pb-14 md:pb-20">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 items-end">
+          <div className="md:col-span-5 order-2 md:order-1">
+            <p className="mono text-[0.66rem] uppercase tracking-[0.28em] text-flare mb-4">
+              {profile.role} · {copy.nav.home}
+            </p>
+            <motion.h1
+              className="display text-[clamp(3.2rem,14vw,9rem)] text-ink"
+              style={{ fontVariationSettings: axes }}
+            >
+              <span className="block">{firstName}</span>
+              {lastName && <span className="block text-flare">{lastName}</span>}
+            </motion.h1>
+            <p className="font-serif italic text-lg md:text-xl text-ink-soft mt-6 max-w-md">
+              {profile.bio ?? copy.home.tagline_fallback}
+            </p>
+            <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <Link
+                href="/portfolio"
+                className="inline-flex items-center gap-3 mono text-[0.68rem] uppercase tracking-[0.24em] text-paper bg-flare px-6 py-3 hover:bg-flare-soft transition-colors"
+              >
+                {copy.home.categories_cta} →
+              </Link>
+              <Link
+                href="/contact"
+                className="hover-mark mono text-[0.68rem] uppercase tracking-[0.24em] text-ink-soft hover:text-flare"
+              >
+                {copy.nav.contact}
+              </Link>
+            </div>
+          </div>
+
+          {/* Hero image */}
+          {heroSrc && (
+            <motion.div
+              initial={reduced ? false : { opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              className="md:col-span-7 order-1 md:order-2 relative"
+            >
+              <div className="relative aspect-[4/5] md:aspect-[3/4] overflow-hidden bg-shade grain">
+                <Image
+                  src={heroSrc}
+                  alt={displayName}
+                  fill
+                  priority
+                  sizes="(min-width: 768px) 55vw, 100vw"
+                  className="object-cover"
+                />
+              </div>
+            </motion.div>
+          )}
+        </div>
+      </section>
+
+      {/* CATEGORIES */}
+      {categories.length > 0 && (
+        <section className="px-5 md:px-10 lg:px-16 py-14 md:py-20 border-t border-rule">
+          <div className="flex items-end justify-between gap-6 mb-8 md:mb-12">
+            <div>
+              <p className="mono text-[0.62rem] uppercase tracking-[0.28em] text-flare mb-3">
+                {copy.home.categories_eyebrow}
+              </p>
+              <motion.h2
+                className="display text-[clamp(2rem,6vw,3.6rem)] text-ink"
+                style={{ fontVariationSettings: axes }}
+              >
+                {copy.portfolio.title}
+              </motion.h2>
+            </div>
+            <Link
+              href="/portfolio"
+              className="hover-mark hidden sm:inline mono text-[0.66rem] uppercase tracking-[0.24em] text-flare"
+            >
+              {copy.home.categories_cta} →
+            </Link>
+          </div>
+
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            {categories.map((cat, i) => {
+              const cover =
+                cat.cover_image_url ||
+                media.find((m) => m.category_id === cat.id)?.url;
+              return (
+                <motion.li
+                  key={cat.id}
+                  initial={reduced ? false : { opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-10% 0px" }}
+                  transition={{ duration: 0.7, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <Link
+                    href={`/portfolio?category=${cat.slug}`}
+                    className="group block"
+                  >
+                    <div className="relative aspect-[3/4] overflow-hidden bg-shade grain">
+                      {cover && (
+                        <Image
+                          src={cover}
+                          alt={cat.name}
+                          fill
+                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                          className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                        />
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-paper/80 via-paper/0 to-paper/0" />
+                      <div className="absolute inset-x-0 bottom-0 p-5 md:p-6 flex items-baseline justify-between gap-3">
+                        <span className="display text-[1.6rem] md:text-[2rem] tracking-[-0.02em] text-ink">
+                          {cat.name}
+                        </span>
+                        <span className="mono text-[0.6rem] uppercase tracking-[0.24em] text-flare opacity-0 group-hover:opacity-100 transition-opacity">
+                          öffnen →
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.li>
+              );
+            })}
+          </ul>
+        </section>
       )}
+
+      {/* STATS + BIO teaser */}
+      <section className="px-5 md:px-10 lg:px-16 py-14 md:py-20 border-t border-rule bg-shade/40">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
+          <div className="md:col-span-5">
+            <p className="mono text-[0.62rem] uppercase tracking-[0.28em] text-flare mb-4">
+              {copy.home.stats_eyebrow}
+            </p>
+            {hasStats ? (
+              <dl className="grid grid-cols-2 gap-x-6 gap-y-6">
+                {Object.entries(stats).map(([key, value]) => (
+                  <div key={key} className="border-t border-rule pt-3">
+                    <dt className="mono text-[0.6rem] uppercase tracking-[0.22em] text-muted mb-1">
+                      {key}
+                    </dt>
+                    <dd className="font-serif text-xl md:text-2xl text-ink">{value}</dd>
+                  </div>
+                ))}
+              </dl>
+            ) : (
+              <p className="font-serif italic text-lg text-muted">{copy.home.stats_empty}</p>
+            )}
+          </div>
+
+          <div className="md:col-span-6 md:col-start-7">
+            <p className="mono text-[0.62rem] uppercase tracking-[0.28em] text-flare mb-4">
+              {copy.home.about_eyebrow}
+            </p>
+            <p className={`font-serif text-base md:text-lg leading-relaxed ${hasBio ? "text-ink-soft" : "italic text-muted"}`}>
+              {profile.bio ?? copy.home.about_empty}
+            </p>
+            <Link
+              href="/about"
+              className="hover-mark inline-block mt-8 mono text-[0.66rem] uppercase tracking-[0.24em] text-flare"
+            >
+              {copy.home.about_more} →
+            </Link>
+          </div>
+        </div>
+      </section>
     </>
-  );
-}
-
-export default function HomeClient({ profile, categories }: Props) {
-  const { t } = useLang();
-  const reduced = useReducedMotion();
-  const axes = useKineticAxes(reduced);
-
-  const displayName = profile.display_name ?? profile.slug;
-  const firstName = displayName.split(" ")[0];
-  const lastName = displayName.split(" ").slice(1).join(" ");
-
-  // Little rhythm strip at the bottom of the cover — echoes the
-  // tenant's own category names (not hard-coded still/stride/turn).
-  // If the account is empty, a short manifesto stands in.
-  const hintRotator = useMemo(
-    () =>
-      categories.length > 0
-        ? [
-            ...categories.map((c) => c.name.toLowerCase()),
-            t(translations.nav.process).toLowerCase(),
-            t(translations.nav.contact).toLowerCase(),
-          ]
-        : [t(translations.cover.hint).split(".")[0].toLowerCase()],
-    [categories, t],
-  );
-
-  return (
-    <article className="relative min-h-[92svh] md:min-h-screen px-5 md:px-16 lg:px-24 pt-28 md:pt-32 pb-20 md:pb-28 max-w-[1400px] mx-auto flex flex-col justify-center">
-      <span className="mono text-[0.66rem] tracking-[0.22em] text-muted tabular-nums uppercase">
-        {t(translations.cover.eyebrow)}
-      </span>
-      <motion.h1
-        className="display mt-6 md:mt-8 text-[clamp(3.2rem,14vw,10.5rem)] max-w-[16ch]"
-        style={{ fontVariationSettings: axes as MotionValue<string> }}
-      >
-        <TypewriterName name={firstName} reduced={reduced} />
-        {lastName && (
-          <>
-            <br />
-            <span className="text-ink-soft">
-              <TypewriterName name={lastName} reduced={reduced} />
-            </span>
-          </>
-        )}
-      </motion.h1>
-      <p className="mt-10 md:mt-12 max-w-[38ch] text-[1.05rem] leading-relaxed text-ink-soft">
-        {profile.bio ?? t(translations.cover.subtitle)}
-      </p>
-      <Link
-        href="/photos"
-        className="mono inline-block mt-10 md:mt-12 text-[0.78rem] tracking-[0.22em] uppercase hover-mark w-fit"
-      >
-        {t(translations.cover.invitation)} →
-      </Link>
-      <p className="mono mt-14 md:mt-20 text-[0.62rem] tracking-[0.22em] text-muted uppercase max-w-[36ch]">
-        {t(translations.cover.hint)}
-      </p>
-      <span
-        aria-hidden
-        className="mono mt-auto pt-16 text-[0.56rem] tracking-[0.28em] text-muted uppercase"
-      >
-        {hintRotator.join("  ·  ")}
-      </span>
-    </article>
   );
 }

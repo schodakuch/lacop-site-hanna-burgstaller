@@ -1,0 +1,76 @@
+// DE-only UI copy. Single language per site (see repo-root PROMPT update
+// 2026-04-20: "same functionality as chiara-ebner — DE-only, hero image,
+// portfolio filter, classic contact form"). LACOP profile data (name,
+// stats, categories, media) still lives in src/data/mock.ts.
+
+export const copy = {
+  nav: {
+    home: "Start",
+    portfolio: "Portfolio",
+    about: "Über mich",
+    contact: "Kontakt",
+    menu: "Menü",
+    close: "Schließen",
+  },
+  home: {
+    tagline_fallback: "Model",
+    categories_eyebrow: "Serien",
+    categories_cta: "Portfolio entdecken",
+    stats_eyebrow: "Maße",
+    stats_empty: "Maße folgen.",
+    about_eyebrow: "Kurzbio",
+    about_empty: "Kurzbio folgt.",
+    about_more: "Mehr über mich",
+    scroll_hint: "Scrollen",
+  },
+  portfolio: {
+    title: "Portfolio",
+    eyebrow: "Serien",
+    filter_all: "Alle",
+    empty: "Noch keine Fotos in dieser Serie.",
+    count_one: "1 Frame",
+    count_other: (n: number) => `${n} Frames`,
+  },
+  about: {
+    title: "Über mich",
+    eyebrow: "Über",
+    bio_heading: "Kurzbio",
+    bio_empty: "Kurzbio folgt.",
+    stats_heading: "Maße",
+    stats_empty: "Maße folgen.",
+    agencies_heading: "Agenturen",
+    agencies_empty: "Agentur folgt.",
+    links_heading: "Links",
+  },
+  contact: {
+    title: "Kontakt",
+    eyebrow: "Direkte Leitung",
+    subtitle: "Für Buchungen und Kooperationen.",
+    form: {
+      name: "Name",
+      email: "E-Mail",
+      subject: "Betreff",
+      message: "Nachricht",
+      send: "Nachricht senden",
+      sending: "wird gesendet…",
+      sent: "Danke — ich melde mich bald.",
+    },
+    info_heading: "Kontaktinfo",
+    follow_heading: "Folge mir",
+  },
+  footer: {
+    rights: "Alle Rechte vorbehalten.",
+    top: "Nach oben",
+    made_with: "Portfolio by",
+    impressum: "Impressum",
+  },
+  impressum: {
+    title: "Impressum",
+    placeholder: "Impressum folgt.",
+  },
+  notfound: {
+    heading: "Nicht gefunden",
+    body: "Diese Seite gehört nicht zum Ablauf.",
+    home: "Zur Startseite",
+  },
+};

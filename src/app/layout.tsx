@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Fraunces, Bricolage_Grotesque, Geist_Mono } from "next/font/google";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import { LanguageProvider } from "@/context/LanguageContext";
 import { ProfileProvider } from "@/context/ProfileContext";
 import { getCategories, getProfile } from "@/lib/lacop";
 import "./globals.css";
@@ -31,18 +30,12 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://hanna-burgstaller.
 export async function generateMetadata(): Promise<Metadata> {
   const [profile, categories] = await Promise.all([getProfile(), getCategories()]);
   const displayName = profile.display_name ?? profile.slug;
-  // Weave the customer's first three category names into the fallback
-  // description so the meta line describes *this* tenant's work, not a
-  // different customer's taxonomy (pre-fix, this always said
-  // "Stills, strides, turns" even when the active tenant had different
-  // categories — see PITFALLS § 4).
   const names = categories.slice(0, 3).map((c) => c.name.toLowerCase());
   const tagline =
     names.length >= 2
-      ? `${names.slice(0, -1).join(", ")} and ${names.slice(-1)[0]}`
-      : names[0] ?? "a scrolling sequence";
-  const description =
-    profile.bio ?? `${displayName} — a scrolling sequence: ${tagline}.`;
+      ? `${names.slice(0, -1).join(", ")} und ${names.slice(-1)[0]}`
+      : names[0] ?? "Portfolio";
+  const description = profile.bio ?? `${displayName} — Portfolio: ${tagline}.`;
 
   return {
     metadataBase: new URL(SITE_URL),
@@ -56,8 +49,7 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: { canonical: "/" },
     openGraph: {
       type: "profile",
-      locale: "en_US",
-      alternateLocale: ["de_DE"],
+      locale: "de_DE",
       url: SITE_URL,
       siteName: displayName,
       title: displayName,
@@ -99,28 +91,27 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     "@type": "WebSite",
     name: displayName,
     url: SITE_URL,
-    inLanguage: ["en-US", "de-DE"],
+    inLanguage: "de-DE",
   };
 
   return (
-    <html lang="en">
+    <html lang="de">
       <body
+        id="top"
         className={`${display.variable} ${body.variable} ${mono.variable} bg-paper text-ink min-h-screen flex flex-col`}
       >
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[80] focus:bg-ink focus:text-paper focus:px-4 focus:py-2 focus:text-xs focus:uppercase focus:tracking-[0.2em]"
         >
-          Skip to content
+          Zum Inhalt springen
         </a>
         <ProfileProvider profile={profile} categories={categories}>
-          <LanguageProvider>
-            <Navigation />
-            <main id="main" className="flex-1">
-              {children}
-            </main>
-            <Footer />
-          </LanguageProvider>
+          <Navigation />
+          <main id="main" className="flex-1">
+            {children}
+          </main>
+          <Footer />
         </ProfileProvider>
         <script
           type="application/ld+json"

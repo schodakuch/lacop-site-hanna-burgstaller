@@ -8,8 +8,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const profile = await getProfile();
   const name = profile.display_name ?? profile.slug;
   return {
-    title: "Contact",
-    description: `${name} — a direct line.`,
+    title: "Kontakt",
+    description: `${name} — Kontakt & Buchung.`,
     alternates: { canonical: "/contact" },
   };
 }
