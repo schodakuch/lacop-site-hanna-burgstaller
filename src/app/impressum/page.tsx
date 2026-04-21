@@ -13,7 +13,7 @@ export default function ImpressumPage() {
       <p className="mono text-[0.62rem] uppercase tracking-[0.28em] text-flare mb-3">
         {copy.footer.impressum}
       </p>
-      <h1 className="display text-[clamp(3rem,10vw,6rem)] text-ink">
+      <h1 className="display text-[clamp(2.2rem,8vw,5rem)] text-ink">
         {copy.impressum.title}
       </h1>
       <p className="font-serif italic text-xl md:text-2xl text-muted mt-10">

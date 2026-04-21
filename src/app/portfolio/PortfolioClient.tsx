@@ -47,7 +47,7 @@ export default function PortfolioClient({ categories, media }: Props) {
           {copy.portfolio.eyebrow}
         </p>
         <motion.h1
-          className="display text-[clamp(3rem,12vw,8rem)] text-ink"
+          className="display text-[clamp(2.2rem,8.5vw,5.4rem)] text-ink"
           style={{ fontVariationSettings: axes }}
         >
           {copy.portfolio.title}
@@ -83,7 +83,7 @@ export default function PortfolioClient({ categories, media }: Props) {
         ) : (
           <motion.ul
             layout
-            className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5"
+            className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5"
           >
             {visible.map((item, i) => (
               <motion.li

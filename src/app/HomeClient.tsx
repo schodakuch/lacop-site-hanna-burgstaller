@@ -34,15 +34,15 @@ export default function HomeClient({ profile, categories, media }: Props) {
 
   return (
     <>
-      {/* HERO — type-dominant: kinetic name + small inset portrait */}
-      <section className="relative px-5 md:px-10 lg:px-16 pt-6 md:pt-8 pb-10 md:pb-12">
+      {/* HERO — type-dominant: kinetic name + small inset portrait; svh-capped to fit fold */}
+      <section className="relative px-5 md:px-10 lg:px-16 pt-6 md:pt-8 pb-10 md:pb-12 flex flex-col justify-center min-h-[calc(100svh-3.5rem)] md:min-h-0">
         <p className="mono text-[0.62rem] uppercase tracking-[0.28em] text-flare mb-3">
           {profile.role} · {copy.nav.home}
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-8 items-end">
           <motion.h1
-            className="md:col-span-9 display text-[clamp(2.4rem,9vw,5.4rem)] text-ink"
+            className="md:col-span-9 display text-[clamp(1.9rem,7vw,4.6rem)] text-ink"
             style={{ fontVariationSettings: axes }}
           >
             <span className="block">{firstName}</span>
@@ -56,13 +56,13 @@ export default function HomeClient({ profile, categories, media }: Props) {
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="md:col-span-3 relative"
             >
-              <div className="relative aspect-[3/4] overflow-hidden bg-shade grain max-h-[280px] md:max-h-[340px] mx-auto md:ml-auto md:mr-0 w-full max-w-[210px] md:max-w-none">
+              <div className="relative aspect-[3/4] overflow-hidden bg-shade grain max-h-[32svh] md:max-h-[50svh] mx-auto md:ml-auto md:mr-0 w-full max-w-[180px] md:max-w-none">
                 <Image
                   src={heroSrc}
                   alt={displayName}
                   fill
                   priority
-                  sizes="(min-width: 768px) 20vw, 55vw"
+                  sizes="(min-width: 768px) 20vw, 45vw"
                   className="object-cover"
                 />
               </div>
@@ -70,7 +70,7 @@ export default function HomeClient({ profile, categories, media }: Props) {
           )}
         </div>
 
-        <div className="mt-6 md:mt-8 max-w-md">
+        <div className="mt-5 md:mt-8 max-w-md">
           <p className="font-serif italic text-base text-ink-soft">
             {profile.bio ?? copy.home.tagline_fallback}
           </p>
@@ -93,14 +93,14 @@ export default function HomeClient({ profile, categories, media }: Props) {
 
       {/* CATEGORIES */}
       {categories.length > 0 && (
-        <section className="px-5 md:px-10 lg:px-16 py-14 md:py-20 border-t border-rule">
+        <section className="px-5 md:px-10 lg:px-16 py-12 md:py-16 lg:py-20 border-t border-rule">
           <div className="flex items-end justify-between gap-6 mb-8 md:mb-12">
             <div>
               <p className="mono text-[0.62rem] uppercase tracking-[0.28em] text-flare mb-3">
                 {copy.home.categories_eyebrow}
               </p>
               <motion.h2
-                className="display text-[clamp(2rem,6vw,3.6rem)] text-ink"
+                className="display text-[clamp(1.8rem,5vw,3rem)] text-ink"
                 style={{ fontVariationSettings: axes }}
               >
                 {copy.portfolio.title}
@@ -154,7 +154,7 @@ export default function HomeClient({ profile, categories, media }: Props) {
       )}
 
       {/* STATS + BIO teaser */}
-      <section className="px-5 md:px-10 lg:px-16 py-14 md:py-20 border-t border-rule bg-shade/40">
+      <section className="px-5 md:px-10 lg:px-16 py-12 md:py-16 lg:py-20 border-t border-rule bg-shade/40">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
           <div className="md:col-span-5">
             <p className="mono text-[0.62rem] uppercase tracking-[0.28em] text-flare mb-4">

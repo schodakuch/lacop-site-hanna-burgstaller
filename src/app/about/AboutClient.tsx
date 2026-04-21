@@ -28,7 +28,7 @@ export default function AboutClient({ profile }: Props) {
           {copy.about.eyebrow}
         </p>
         <motion.h1
-          className="display text-[clamp(3rem,12vw,8rem)] text-ink"
+          className="display text-[clamp(2.2rem,8.5vw,5.4rem)] text-ink"
           style={{ fontVariationSettings: axes }}
         >
           {copy.about.title}

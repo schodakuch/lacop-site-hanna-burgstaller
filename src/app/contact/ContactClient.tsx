@@ -50,7 +50,7 @@ export default function ContactClient({ profile }: Props) {
           {copy.contact.eyebrow}
         </p>
         <motion.h1
-          className="display text-[clamp(3rem,12vw,8rem)] text-ink"
+          className="display text-[clamp(2.2rem,8.5vw,5.4rem)] text-ink"
           style={{ fontVariationSettings: axes }}
         >
           {copy.contact.title}
@@ -107,7 +107,7 @@ export default function ContactClient({ profile }: Props) {
           <div className="md:col-span-7">
             {sent ? (
               <div className="py-12 text-center">
-                <p className="display text-6xl text-flare mb-6">✓</p>
+                <p className="display text-5xl sm:text-6xl text-flare mb-6">✓</p>
                 <p className="font-serif italic text-xl md:text-2xl text-ink">
                   {copy.contact.form.sent}
                 </p>

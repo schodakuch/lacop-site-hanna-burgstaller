@@ -2,6 +2,45 @@
 
 Demo site for Hanna Burgstaller (hanna-burgstaller.lacop.site).
 
+## 2026-04-21 — Hero fits the fold (svh caps + flex-centered section)
+
+Type-dominant hero could still push past the fold on short viewports
+once the px-capped image (280px) was stacked beneath the H1 plus bio
+plus CTAs. Swapped fixed px caps for svh so the image scales with the
+viewport instead of the container, centered the whole hero inside
+`min-h-[calc(100svh-nav)]`, and trimmed the H1 clamp one more step.
+
+- Hero image: `max-h-[280px] md:max-h-[340px]` and `max-w-[210px]` →
+  `max-h-[32svh] md:max-h-[50svh]` and `max-w-[180px]` (mobile).
+- Hero section: `flex flex-col justify-center
+  min-h-[calc(100svh-3.5rem)] md:min-h-[calc(100svh-4rem)]`.
+- H1 cap: `7.5vw,4.8rem` → `7vw,4.6rem`.
+- Image sizes hint: `55vw` → `45vw` on mobile (smaller intrinsic).
+
+**Why svh, not vh:** see carina CHANGELOG — `vh` overcounts on mobile
+browsers with visible chrome, so any `max-h-[Xvh]` fails to prevent
+overflow on iPhone-class viewports.
+
+## 2026-04-21 — Tame oversized sections across breakpoints
+
+Type-dominant hero and page heads were blowing out on tablet/desktop —
+the `clamp(3rem,12vw,8rem)` ceilings hit 128px well before a wide
+monitor needed them. Portfolio also stayed in a 2-column grid all the
+way through tablet (`lg:grid-cols-3`), which made thumbnails huge at
+768–1023px. Pulled caps and promoted the grid to `md:grid-cols-3`.
+
+- Home H1: `clamp(2.4rem,9vw,5.4rem)` → `clamp(2rem,7.5vw,4.8rem)`.
+- Home categories H2: `clamp(2rem,6vw,3.6rem)` →
+  `clamp(1.8rem,5vw,3rem)`.
+- About/Portfolio/Contact H1s: `clamp(3rem,12vw,8rem)` →
+  `clamp(2.2rem,8.5vw,5.4rem)`.
+- Impressum H1: `clamp(3rem,10vw,6rem)` → `clamp(2.2rem,8vw,5rem)`.
+- Portfolio grid: `grid-cols-2 lg:grid-cols-3` → `grid-cols-2
+  md:grid-cols-3` (3 cols from 768px, not 1024px).
+- Section vertical rhythm: `py-14 md:py-20` → `py-12 md:py-16
+  lg:py-20`.
+- Contact success mark `text-6xl` → `text-5xl sm:text-6xl`.
+
 ## 2026-04-20 — Align with LACOP standard portfolio shape (chiara-ebner pattern)
 
 Restructured to the canonical four-route pattern used by every shipping
