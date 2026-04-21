@@ -123,7 +123,7 @@ export default function ContactClient({ profile }: Props) {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex items-center gap-3 mono text-[0.68rem] uppercase tracking-[0.24em] text-paper bg-flare px-6 py-3 hover:bg-flare-soft transition-colors disabled:opacity-60"
+                  className="inline-flex items-center gap-2 text-[0.95rem] font-medium text-paper bg-flare px-6 py-3 hover:bg-flare-soft transition-colors disabled:opacity-60"
                 >
                   {submitting ? copy.contact.form.sending : copy.contact.form.send}
                 </button>

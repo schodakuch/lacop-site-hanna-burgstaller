@@ -2,6 +2,24 @@
 
 Demo site for Hanna Burgstaller (hanna-burgstaller.lacop.site).
 
+## 2026-04-21 — Kill mono+uppercase treatment on nav & interactive links
+
+The primary nav, CTAs, filter pills, back-to-top, submit button, and
+404 home link were all using `mono uppercase tracking-[0.24em]` —
+the banned "editorial-mono-uppercase" treatment. Replaced with the
+body font (Bricolage Grotesque) in mixed case, restrained tracking,
+active state via weight + color (not typecase). Mono stays in place
+for genuine eyebrow labels, stat `dt` labels, drawer numerals
+("01/02/03/04"), photo credits, and the LACOP footer signature —
+captions/labels where the monospace pattern is idiomatic.
+
+Touched: `components/Navigation.tsx` (desktop routes, mobile toggle),
+`components/Footer.tsx` (back-to-top), `app/HomeClient.tsx` (primary
++ secondary hero CTA, categories link, "Mehr über mich"),
+`app/portfolio/PortfolioClient.tsx` (filter pills),
+`app/contact/ContactClient.tsx` (submit button), `app/not-found.tsx`
+(home link).
+
 ## 2026-04-21 — Hero fits the fold (svh caps + flex-centered section)
 
 Type-dominant hero could still push past the fold on short viewports

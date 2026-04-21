@@ -77,13 +77,13 @@ export default function HomeClient({ profile, categories, media }: Props) {
           <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
             <Link
               href="/portfolio"
-              className="inline-flex items-center gap-3 mono text-[0.64rem] uppercase tracking-[0.24em] text-paper bg-flare px-5 py-2.5 hover:bg-flare-soft transition-colors"
+              className="inline-flex items-center gap-2 text-[0.95rem] font-medium text-paper bg-flare px-5 py-2.5 hover:bg-flare-soft transition-colors"
             >
               {copy.home.categories_cta} →
             </Link>
             <Link
               href="/contact"
-              className="hover-mark mono text-[0.64rem] uppercase tracking-[0.24em] text-ink-soft hover:text-flare"
+              className="hover-mark text-[0.95rem] font-medium text-ink-soft hover:text-flare"
             >
               {copy.nav.contact}
             </Link>
@@ -108,7 +108,7 @@ export default function HomeClient({ profile, categories, media }: Props) {
             </div>
             <Link
               href="/portfolio"
-              className="hover-mark hidden sm:inline mono text-[0.66rem] uppercase tracking-[0.24em] text-flare"
+              className="hover-mark hidden sm:inline text-[0.95rem] font-medium text-flare hover:text-ink"
             >
               {copy.home.categories_cta} →
             </Link>
@@ -185,7 +185,7 @@ export default function HomeClient({ profile, categories, media }: Props) {
             </p>
             <Link
               href="/about"
-              className="hover-mark inline-block mt-8 mono text-[0.66rem] uppercase tracking-[0.24em] text-flare"
+              className="hover-mark inline-block mt-8 text-[0.95rem] font-medium text-flare hover:text-ink"
             >
               {copy.home.about_more} →
             </Link>

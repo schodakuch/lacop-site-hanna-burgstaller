@@ -16,7 +16,7 @@ export default function NotFound() {
       <div className="mt-10">
         <Link
           href="/"
-          className="mono text-[0.72rem] uppercase tracking-[0.22em] text-ink hover-mark"
+          className="text-[0.95rem] font-medium text-ink hover-mark hover:text-flare transition-colors"
         >
           ← {copy.notfound.home}
         </Link>

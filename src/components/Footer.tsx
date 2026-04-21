@@ -36,7 +36,7 @@ export default function Footer() {
               {getSocialLabel(platform)}
             </a>
           ))}
-          <a href="#top" className="hover-mark mono text-[0.66rem] uppercase tracking-[0.24em] text-ink-soft hover:text-flare">
+          <a href="#top" className="hover-mark text-[0.88rem] font-medium text-ink-soft hover:text-flare">
             {copy.footer.top} ↑
           </a>
           <a

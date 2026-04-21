@@ -66,7 +66,7 @@ export default function Navigation() {
         </Link>
 
         {/* Desktop routes */}
-        <nav aria-label="Hauptnavigation" className="hidden md:flex items-center gap-8">
+        <nav aria-label="Hauptnavigation" className="hidden md:flex items-center gap-7">
           {ROUTES.map((r) => {
             const active = isActive(r.href);
             return (
@@ -74,8 +74,8 @@ export default function Navigation() {
                 key={r.key}
                 href={r.href}
                 aria-current={active ? "page" : undefined}
-                className={`mono text-[0.64rem] uppercase tracking-[0.24em] transition-colors ${
-                  active ? "text-flare" : "text-ink-soft hover:text-ink"
+                className={`text-[0.95rem] tracking-[-0.01em] transition-colors ${
+                  active ? "text-flare font-medium" : "text-ink-soft hover:text-ink"
                 }`}
               >
                 {r.label}
@@ -90,7 +90,7 @@ export default function Navigation() {
           onClick={() => setDrawer((v) => !v)}
           aria-expanded={drawer}
           aria-controls="nav-drawer"
-          className="md:hidden mono text-[0.64rem] uppercase tracking-[0.24em] text-ink min-h-11 min-w-11 px-2 flex items-center justify-center -mr-2"
+          className="md:hidden text-[0.95rem] font-medium tracking-[-0.01em] text-ink min-h-11 min-w-11 px-2 flex items-center justify-center -mr-2"
         >
           {drawer ? copy.nav.close : copy.nav.menu}
         </button>

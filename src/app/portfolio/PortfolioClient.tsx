@@ -146,8 +146,8 @@ function FilterPill({
       role="tab"
       aria-selected={active}
       onClick={onClick}
-      className={`mono text-[0.68rem] uppercase tracking-[0.24em] transition-colors ${
-        active ? "text-flare" : "text-ink-soft hover:text-ink"
+      className={`text-[0.95rem] tracking-[-0.01em] transition-colors ${
+        active ? "text-flare font-medium" : "text-ink-soft hover:text-ink"
       }`}
     >
       {label}
